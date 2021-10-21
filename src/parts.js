@@ -78,6 +78,20 @@ export const noseList = [
     boundY: 0,
     boundW: 9,
     boundH: 8,
+    slots: [
+      {
+        x: -9,
+        y: 2,
+        width: 11,
+        height: 4
+      },
+      {
+        x: 5,
+        y: -7,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose02,
@@ -87,6 +101,20 @@ export const noseList = [
     boundY: 0,
     boundW: 7,
     boundH: 8,
+    slots: [
+      {
+        x: -10,
+        y: -7,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 5,
+        y: -7,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose03,
@@ -96,6 +124,20 @@ export const noseList = [
     boundY: 4,
     boundW: 7,
     boundH: 4,
+    slots: [
+      {
+        x: -9.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 2.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose04,
@@ -105,6 +147,20 @@ export const noseList = [
     boundY: 2,
     boundW: 5,
     boundH: 6,
+    slots: [
+      {
+        x: -12,
+        y: -8,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 2,
+        y: -10,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose05,
@@ -114,15 +170,43 @@ export const noseList = [
     boundY: 3,
     boundW: 7,
     boundH: 5,
+    slots: [
+      {
+        x: -10,
+        y: -10,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 4,
+        y: -10,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose06,
     width: 5,
     height: 5,
     boundX: 2,
-    boundY: 2,
+    boundY: 3,
     boundW: 7,
-    boundH: 6,
+    boundH: 5,
+    slots: [
+      {
+        x: -9,
+        y: -11,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 3,
+        y: -11,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose07,
@@ -132,15 +216,43 @@ export const noseList = [
     boundY: 3,
     boundW: 5,
     boundH: 5,
+    slots: [
+      {
+        x: -10.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 1.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose08,
     width: 4,
     height: 7,
-    boundX: 2,
+    boundX: 4,
     boundY: 0,
-    boundW: 8,
+    boundW: 6,
     boundH: 8,
+    slots: [
+      {
+        x: -12,
+        y: -5,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 2,
+        y: -7,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose09,
@@ -150,6 +262,20 @@ export const noseList = [
     boundY: 3,
     boundW: 5,
     boundH: 5,
+    slots: [
+      {
+        x: -9.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 2.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose10,
@@ -159,6 +285,20 @@ export const noseList = [
     boundY: 3,
     boundW: 9,
     boundH: 5,
+    slots: [
+      {
+        x: -7.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 4.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose11,
@@ -168,6 +308,20 @@ export const noseList = [
     boundY: 0,
     boundW: 5,
     boundH: 8,
+    slots: [
+      {
+        x: -11.5,
+        y: -5,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 4.5,
+        y: -5,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Nose12,
@@ -177,5 +331,172 @@ export const noseList = [
     boundY: 2,
     boundW: 5,
     boundH: 6,
+    slots: [
+      {
+        x: -11,
+        y: -10,
+        width: 11,
+        height: 11
+      },
+      {
+        x: 3,
+        y: -10,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+  {
+    path: NoseEye01,
+    width: 7,
+    height: 6,
+    boundX: 0,
+    boundY: 0,
+    boundW: 9,
+    boundH: 8,
+    slots: [
+      {
+        x: 5,
+        y: -8,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+  {
+    path: NoseEye02,
+    width: 7,
+    height: 6,
+    boundX: 0,
+    boundY: 0,
+    boundW: 9,
+    boundH: 8,
+    slots: [
+      {
+        x: 5,
+        y: -8,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+  {
+    path: NoseEye03,
+    width: 7,
+    height: 6,
+    boundX: 0,
+    boundY: 1,
+    boundW: 9,
+    boundH: 7,
+    slots: [
+      {
+        x: 5,
+        y: -9,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+  {
+    path: NoseEye04,
+    width: 7,
+    height: 6,
+    boundX: 0,
+    boundY: 0,
+    boundW: 9,
+    boundH: 8,
+    slots: [
+      {
+        x: 5,
+        y: -7,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+  {
+    path: NoseEye05,
+    width: 4,
+    height: 7,
+    boundX: 1,
+    boundY: 0,
+    boundW: 5,
+    boundH: 8,
+    slots: [
+      {
+        x: 5,
+        y: -6,
+        width: 11,
+        height: 11
+      },
+    ],
+  },
+]
+
+
+export const mouthList = [
+  {
+    path: Mouth01,
+    width: 5,
+    height: 5,
+    boundX: 6,
+    boundY: 6,
+    boundW: 5,
+    boundH: 5,
+  },
+  {
+    path: Mouth02,
+    width: 7,
+    height: 3,
+    boundX: 1,
+    boundY: 8,
+    boundW: 9,
+    boundH: 3,
+  },
+  {
+    path: Mouth03,
+    width: 10,
+    height: 5,
+    boundX: 0.5,
+    boundY: 6,
+    boundW: 10,
+    boundH: 5,
+    skipNose: true
+  },
+  {
+    path: Mouth04,
+    width: 2,
+    height: 2,
+    boundX: 1,
+    boundY: 9,
+    boundW: 9,
+    boundH: 2,
+  },
+  {
+    path: Mouth05,
+    width: 5,
+    height: 5,
+    boundX: 0,
+    boundY: 6,
+    boundW: 5,
+    boundH: 5,
+  },
+  {
+    path: Mouth06,
+    width: 5,
+    height: 1,
+    boundX: 1,
+    boundY: 9,
+    boundW: 9,
+    boundH: 2,
+  },
+  {
+    path: Mouth07,
+    width: 4,
+    height: 2,
+    boundX: 1,
+    boundY: 9,
+    boundW: 9,
+    boundH: 2,
   },
 ]
