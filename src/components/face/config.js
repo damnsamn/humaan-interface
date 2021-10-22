@@ -1,4 +1,3 @@
-import { chooseRandomColor } from "./utilities";
 
 export const
   gridSize = 50,

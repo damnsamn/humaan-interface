@@ -2,7 +2,7 @@ import {
   gridSize,
   colors
 } from "./config"
-import $ from "jquery"
+// import $ from "jquery"
 
 // Returns a random int between 0 and provided max
 export const randomInt = (max) => Math.round(Math.random() * (max))
@@ -14,12 +14,12 @@ export const grid = (value) => value * gridSize
 
 export const chooseRandomColor = () => colors.splice(randomInt(colors.length - 1), 1)[0]
 
-export async function getSvgFromPath(path) {
-  let svg
-  await $.get(path, (contents) => {
-    let $el = $('svg', contents)
-    $el.removeAttr("fill").removeAttr("width").removeAttr("height").children().removeAttr("fill")
-    svg = $el.prop("outerHTML")
-  }, 'xml')
-  return svg
-}
+// export async function getSvgFromPath(path) {
+//   let svg
+//   await $.get(path, (contents) => {
+//     let $el = $('svg', contents)
+//     $el.removeAttr("fill").removeAttr("width").removeAttr("height").children().removeAttr("fill")
+//     svg = $el.prop("outerHTML")
+//   }, 'xml')
+//   return svg
+// }
