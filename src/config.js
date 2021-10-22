@@ -2,7 +2,7 @@ import { chooseRandomColor } from "./utilities";
 
 export const
   gridSize = 50,
-  debug = true,
+  debug = false,
   gridDivisions = 11,
   gridPadding = 3,
   colors = [

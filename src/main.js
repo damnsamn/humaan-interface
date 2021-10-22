@@ -26,7 +26,7 @@ const
 let
   mouthData,
   noseData,
-  eyeData = []
+  eyeSlots = []
 
 
 
@@ -62,16 +62,30 @@ if (debug) {
 // --------------------------------------------------------
 
 
-mouthData = renderPart(face, mouthList);
+mouthData = renderPart(face, mouthList).then(async (value) => {
 
-if (!mouthData.skipNose)
-  noseData = renderPart(face, noseList);
+  eyeSlots = value.slots;
+
+  if (!value.skipNose) {
+    noseData = await renderPart(face, noseList).then((value) => {
+      eyeSlots = value.slots;
+    });
+  }
+
+  await drawEyes(face).then(() => {
+    console.log(draw.svg())
+  });
+});
 
 
-function renderPart(face, partList) {
+
+
+
+async function renderPart(face, partList) {
+  // const partData = partList[0]
   const partData = partList[randomInt(partList.length - 1)]
 
-  getSvgFromPath(partData.path).then(value => {
+  await getSvgFromPath(partData.path).then(value => {
     const flipX = randomInt(1)
 
     // Flip bounds
@@ -117,14 +131,13 @@ function renderPart(face, partList) {
       }
     }
 
-    // Draw bounds
+    // DEBUG: Draw bounds
     if (debug) {
       face
         .rect(grid(partData.boundW), grid(partData.boundH))
         .move(grid(partData.boundX), grid(partData.boundY))
         .fill({ color: foregroundColor, opacity: 0.2 })
         .stroke(foregroundColor)
-
       if (partData.slots) {
         for (let i = 0; i < partData.slots.length; i++) {
           const slot = partData.slots[i];
@@ -139,4 +152,48 @@ function renderPart(face, partList) {
 
   })
   return partData
+}
+
+async function drawEyes(face) {
+  for (let i = 0; i < eyeSlots.length; i++) {
+    const slot = eyeSlots[i];
+    let slotX = Math.max(0, slot.x);
+    let slotY = Math.max(0, slot.y);
+    let slotW = Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width))
+    let slotH = Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height))
+
+    debug &&
+      face
+        .line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH))
+        .stroke("#000")
+
+    const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH)
+    const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
+
+    await getSvgFromPath(eyeData.path).then(value => {
+      const flipX = randomInt(1)
+
+      // Render part
+      const eye =
+        face.nested()
+          .svg(value)
+          .size(grid(eyeData.width), grid(eyeData.height))
+          .move(grid(slotX), grid(slotY))
+
+
+      // Flip part
+      flipX && eye.children().children().flip("x")
+
+      // Position part
+      const
+        x = randomIntHalf(slotW - eyeData.width),
+        y = randomIntHalf(slotH - eyeData.height)
+      console.log({ x, y })
+      eye.dmove(
+        grid(x),
+        grid(y)
+      )
+    })
+    // debugger;
+  }
 }

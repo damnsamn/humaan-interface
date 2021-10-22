@@ -461,7 +461,21 @@ export const mouthList = [
     boundY: 6,
     boundW: 10,
     boundH: 5,
-    skipNose: true
+    skipNose: true,
+    slots: [
+      {
+        x: 5.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+      {
+        x: -6.5,
+        y: -12,
+        width: 11,
+        height: 11
+      },
+    ],
   },
   {
     path: Mouth04,
