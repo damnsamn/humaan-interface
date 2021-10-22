@@ -15,15 +15,17 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Humaan Interface',
-    }),
-  ],
+      inject: 'body',
+      template: './src/index.html',
+      filename: 'index.html'
+    })
+],
   module: {
     rules: [
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
-      },
+      }
     ]
   }
 };
