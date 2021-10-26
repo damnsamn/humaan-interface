@@ -66,26 +66,24 @@ if (debug) {
 }
 // --------------------------------------------------------
 
+render();
 
-mouthData = renderPart(face, mouthList, true).then(async (value) => {
+function render() {
+  mouthData = renderPart(face, mouthList, true).then(async (value) => {
 
-  eyeSlots = value.slots;
+    eyeSlots = value.slots;
 
-  if (!value.skipNose) {
-    noseData = await renderPart(face, noseList).then((value) => {
-      eyeSlots = value.slots;
+    if (!value.skipNose) {
+      noseData = await renderPart(face, noseList).then((value) => {
+        eyeSlots = value.slots;
+      });
+    }
+
+    await drawEyes(face).then(() => {
+
     });
-  }
-
-  await drawEyes(face).then(() => {
-    // face.children().fill(faceForegroundColor)
-    // draw.flatten()
   });
-});
-
-
-
-
+}
 
 async function renderPart(face, partList) {
   const i = randomInt(partList.length - 1),

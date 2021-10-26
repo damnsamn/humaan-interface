@@ -20,3 +20,16 @@
     }
   }
 }
+
+
+button {
+  appearance: none;
+  border: none;
+  // background: none;
+  cursor: pointer;
+  font-family: inherit;
+
+  padding: 1em;
+  position: relative;
+  margin: 0.5em;
+}
