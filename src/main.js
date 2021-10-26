@@ -136,16 +136,16 @@ async function renderPart(face, partList) {
       face
         .rect(grid(partData.boundW), grid(partData.boundH))
         .move(grid(partData.boundX), grid(partData.boundY))
-        .fill({ color: foregroundColor, opacity: 0.2 })
-        .stroke(foregroundColor)
+        .fill({ color: "#ff00ff", opacity: 0.2 })
+        .stroke("#ff00ff")
       if (partData.slots) {
         for (let i = 0; i < partData.slots.length; i++) {
           const slot = partData.slots[i];
           face
             .rect(grid(slot.width), grid(slot.height))
             .move(grid(slot.x), grid(slot.y))
-            .fill({ color: "#ff00ff", opacity: 0.2 })
-            .stroke("#ff00ff")
+            .fill({ color: "#0000ff", opacity: 0.2 })
+            .stroke("#0000ff")
         }
       }
     }
