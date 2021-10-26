@@ -12,7 +12,8 @@ export const randomIntHalf = (max) => Math.round(Math.random() * (max) * 2) / 2
 
 export const grid = (value) => value * gridSize
 
-export const chooseRandomColor = () => colors.splice(randomInt(colors.length - 1), 1)[0]
+let changedColors = [...colors];
+export const chooseRandomColor = () => changedColors.splice(randomInt(changedColors.length - 1), 1)[0]
 
 export async function getSvgFromPath(path) {
   let svg

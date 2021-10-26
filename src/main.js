@@ -1,199 +1,76 @@
-import { SVG } from "@svgdotjs/svg.js"
-import {
-  debug,
-  gridSize,
-  gridDivisions,
-  gridPadding,
-} from "./config"
-import {
-  grid,
-  chooseRandomColor,
-  randomInt,
-  randomIntHalf,
-  getSvgFromPath
-} from "./utilities"
-import {
-  eyeList,
-  partList,
-  mouthList,
-  noseList,
-} from "./parts"
+import $ from "jquery";
+import ColorContrastChecker from "color-contrast-checker";
+import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground } from "./face/face";
+import "./scss/style.scss"
+import { colors } from "./face/config";
 
-const
-  backgroundColor = chooseRandomColor(),
-  foregroundColor = chooseRandomColor()
+let contrastChecker = new ColorContrastChecker()
 
-let
-  mouthData,
-  noseData,
-  eyeSlots = []
+$(() => {
+  document.body.style.setProperty("--foreground", faceBackgroundColor)
+  document.body.style.setProperty("--background", faceForegroundColor)
+  setBodyClass()
 
-
-
-const draw =
-  SVG()
-    .addTo('body')
-    .size((gridDivisions + gridPadding * 2) * gridSize, (gridDivisions + gridPadding * 2) * gridSize)
-
-const background = draw.rect(draw.width(), draw.height()).attr({ fill: backgroundColor })
-const face =
-  draw.nested()
-    .size(gridSize * gridDivisions, gridSize * gridDivisions)
-    .move(grid(gridPadding), grid(gridPadding))
-    .fill(foregroundColor)
-
-
-// Grid
-// --------------------------------------------------------
-if (debug) {
-  for (let i = 1; i < gridDivisions; i++) {
-    face
-      .line(i * gridSize, 0, i * gridSize, face.height())
-      .stroke("#fff")
-    face
-      .line(0, i * gridSize, face.width(), i * gridSize)
-      .stroke("#fff")
-  }
-  face
-    .rect(gridDivisions * gridSize, gridDivisions * gridSize)
-    .fill({ color: null, opacity: 0 })
-    .stroke("#fff")
-}
-// --------------------------------------------------------
-
-
-mouthData = renderPart(face, mouthList).then(async (value) => {
-
-  eyeSlots = value.slots;
-
-  if (!value.skipNose) {
-    noseData = await renderPart(face, noseList).then((value) => {
-      eyeSlots = value.slots;
-    });
-  }
-
-  await drawEyes(face).then(() => {
-    console.log(draw.svg())
+  colors.forEach(color => {
+    $(".buttons").append(`<button data-foreground="${color}" style="background-color: ${color}">Background</button>`)
+    $(".buttons").append(`<button data-background="${color}" style="background-color: ${color}">Foreground</button>`)
   });
-});
 
+  $("button").on("click", function () {
+    const fg = $(this).data("foreground");
+    const bg = $(this).data("background");
 
+    if (fg === backgroundColor() || bg === foregroundColor())
+      return
 
-
-
-async function renderPart(face, partList) {
-  // const partData = partList[0]
-  const partData = partList[randomInt(partList.length - 1)]
-
-  await getSvgFromPath(partData.path).then(value => {
-    const flipX = randomInt(1)
-
-    // Flip bounds
-    flipX && (partData.boundX = gridDivisions - partData.boundX - partData.boundW)
-
-    // Define part
-    const part =
-      face
-        .nested()
-        .svg(value)
-        .move(grid(partData.boundX), grid(partData.boundY))
-        .size(grid(partData.width), grid(partData.height))
-
-    // Flip part
-    flipX && part.children().children().flip("x")
-
-    // Position part
-    const
-      x = randomIntHalf(partData.boundW - partData.width),
-      y = randomIntHalf(partData.boundH - partData.height)
-    part.dmove(
-      grid(x),
-      grid(y)
-    )
-
-    if (partData.slots) {
-      // Normalise slots
-      for (let i = 0; i < partData.slots.length; i++) {
-        const slot = partData.slots[i]
-        slot.x += partData.boundX + x
-        slot.y += partData.boundY + y
-      }
-
-      // Flip slots
-      if (flipX) {
-        for (let i = 0; i < partData.slots.length; i++) {
-          const
-            slot = partData.slots[i],
-            axis = partData.boundX + x + partData.width / 2
-
-          slot.x = (axis) - (slot.x - (axis)) - slot.width
-        }
-      }
+    if (fg) {
+      foregroundColor(fg);
+      setFaceBackground(fg)
     }
-
-    // DEBUG: Draw bounds
-    if (debug) {
-      face
-        .rect(grid(partData.boundW), grid(partData.boundH))
-        .move(grid(partData.boundX), grid(partData.boundY))
-        .fill({ color: "#ff00ff", opacity: 0.2 })
-        .stroke("#ff00ff")
-      if (partData.slots) {
-        for (let i = 0; i < partData.slots.length; i++) {
-          const slot = partData.slots[i];
-          face
-            .rect(grid(slot.width), grid(slot.height))
-            .move(grid(slot.x), grid(slot.y))
-            .fill({ color: "#0000ff", opacity: 0.2 })
-            .stroke("#0000ff")
-        }
-      }
+    if (bg) {
+      backgroundColor(bg);
+      setFaceForeground(bg)
     }
-
   })
-  return partData
+
+})
+
+function foregroundColor(color = null) {
+  // set
+  if (color) {
+    document.body.style.setProperty("--foreground", color)
+    setBodyClass()
+  }
+  // get
+  else
+    return document.body.style.getPropertyValue("--foreground")
 }
 
-async function drawEyes(face) {
-  for (let i = 0; i < eyeSlots.length; i++) {
-    const slot = eyeSlots[i];
-    let slotX = Math.max(0, slot.x);
-    let slotY = Math.max(0, slot.y);
-    let slotW = Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width))
-    let slotH = Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height))
+function backgroundColor(color = null) {
+  // set
+  if (color) {
+    document.body.style.setProperty("--background", color)
+    setBodyClass()
+  }
+  // get
+  else
+    return document.body.style.getPropertyValue("--background")
+}
 
-    debug &&
-      face
-        .line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH))
-        .stroke("#000")
+function setBodyClass() {
 
-    const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH)
-    const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
+  if (contrastChecker.isLevelCustom(foregroundColor(), backgroundColor(), 2)) {
+    $("body").removeClass("text-dark").removeClass("text-light")
+    return
+  }
 
-    await getSvgFromPath(eyeData.path).then(value => {
-      const flipX = randomInt(1)
+  if (contrastChecker.isLevelCustom(backgroundColor(), "#000000", 2)) {
+    $("body").addClass("text-dark").removeClass("text-light")
+    return
+  }
 
-      // Render part
-      const eye =
-        face.nested()
-          .svg(value)
-          .size(grid(eyeData.width), grid(eyeData.height))
-          .move(grid(slotX), grid(slotY))
-
-
-      // Flip part
-      flipX && eye.children().children().flip("x")
-
-      // Position part
-      const
-        x = randomIntHalf(slotW - eyeData.width),
-        y = randomIntHalf(slotH - eyeData.height)
-      console.log({ x, y })
-      eye.dmove(
-        grid(x),
-        grid(y)
-      )
-    })
-    // debugger;
+  if (contrastChecker.isLevelCustom(backgroundColor(), "#FFFFFF", 2)) {
+    $("body").removeClass("text-dark").addClass("text-light")
+    return
   }
 }

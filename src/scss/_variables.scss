@@ -1,0 +1,27 @@
+// Colors
+// -----------------------------------
+$color--light: rgba(#fff,0.8);
+$color--dark: rgba(#000,0.8);
+
+$color__background: var(--background);
+$color__foreground: var(--foreground);
+
+// Layout
+// -----------------------------------
+$columns: 12;
+$gutter-size: 2rem;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1366px,
+);
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1280px,
+);

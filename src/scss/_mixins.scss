@@ -1,0 +1,20 @@
+@use "sass:map";
+@use "sass:color";
+
+@mixin breakpoint($bp) {
+  @media (min-width: map.get($grid-breakpoints, $bp)) {
+    @content;
+  }
+}
+
+@mixin col($n: null) {
+  @if ($n == null) {
+    padding: $gutter-size/2;
+    flex: 0 0 auto;
+  } @else {
+    $width: (100% * $n/$columns);
+    padding: $gutter-size/2;
+    flex: 0 0 $width;
+    width: $width;
+  }
+}
