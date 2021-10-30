@@ -1,6 +1,6 @@
 import $ from "jquery";
 import ColorContrastChecker from "color-contrast-checker";
-import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground } from "./face/face";
+import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG } from "./face/face";
 import "./scss/style.scss"
 import { colors } from "./face/config";
 
@@ -12,11 +12,11 @@ $(() => {
   setBodyClass()
 
   colors.forEach(color => {
-    $(".buttons").append(`<button data-foreground="${color}" style="background-color: ${color}">Background</button>`)
-    $(".buttons").append(`<button data-background="${color}" style="background-color: ${color}">Foreground</button>`)
+    $("#colors-fg").append(`<button class="button-group__button" data-background="${color}" style="background-color: ${color}"></button>`)
+    $("#colors-bg").append(`<button class="button-group__button" data-foreground="${color}" style="background-color: ${color}"></button>`)
   });
 
-  $("button").on("click", function () {
+  $(".button-group__button").on("click", function () {
     const fg = $(this).data("foreground");
     const bg = $(this).data("background");
 
@@ -31,6 +31,11 @@ $(() => {
       backgroundColor(bg);
       setFaceForeground(bg)
     }
+    updateFavicon()
+  })
+
+  $(document).on("svgUpdated", function() {
+    updateFavicon();
   })
 
 })
@@ -73,4 +78,12 @@ function setBodyClass() {
     $("body").removeClass("text-dark").addClass("text-light")
     return
   }
+}
+
+function updateFavicon() {
+  const prepend = "data:image/svg+xml;utf8,"
+  const svg = getFaceSVG("15%")
+  .replace(/\"/g, "\'")
+  .replace(/\#/g, "%23");
+  $("link#favicon").attr("href", `${prepend}${svg}`)
 }

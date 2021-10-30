@@ -1,3 +1,12 @@
+.center-to-square {
+  padding: $gutter-size 0;
+
+  @include breakpoint(lg) {
+    padding-top: calc(50vh - 100% / 2);
+    padding-bottom: calc(50vh - 100% / 2);
+  }
+}
+
 .container {
   padding-left: $gutter-size/2;
   padding-right: $gutter-size/2;
@@ -9,35 +18,43 @@
       max-width: $width;
     }
   }
+
+  &-fixed {
+    @include responsive-classes() {
+      position: sticky;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      pointer-events: none;
+    }
+  }
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin: -$gutter-size/2;
-  width: 100%;
+  margin-left: -$gutter-size/2;
+  margin-right: -$gutter-size/2;
 }
 
 .col {
-  @include col();
+  @include responsive-classes() {
+    @include col();
 
-  @for $n from 1 through $columns {
-    &-#{$n} {
-      @include col($n);
+    @for $n from 1 through $columns {
+      &-#{$n} {
+        @include col($n);
+      }
     }
   }
-  @each $bp, $width in $grid-breakpoints {
-    @if ($width != 0) {
-      @include breakpoint($bp) {
-        &-#{$bp} {
-          @include col();
+}
 
-          @for $n from 1 through $columns {
-            &-#{$n} {
-              @include col($n);
-            }
-          }
-        }
+.offset {
+  @include responsive-classes() {
+    @for $n from 1 through $columns {
+      &-#{$n} {
+        @include offset($n);
       }
     }
   }

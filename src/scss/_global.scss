@@ -6,6 +6,7 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  margin: 0;
   color: $color__foreground;
   background: $color__background;
   transition: 0.15s ease-in-out;
@@ -15,5 +16,16 @@ body {
   }
   &.text-light {
     color: $color--light;
+  }
+}
+
+@for $n from 1 through 6 {
+  h#{$n} {
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

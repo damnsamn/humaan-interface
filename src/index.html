@@ -5,20 +5,42 @@
     <meta charset="utf-8">
     <title>Humaan Interface</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link id="favicon" rel="icon" />
+
   </head>
 
   <body>
-    <header class="header"></header>
+    <header class="header">
+      <!-- <h1>Humaaaan</h1> -->
+    </header>
     <main class="main">
       <div class="container">
         <div class="row">
+
           <div class="col-12 col-lg-6">
-            <div class="face" id="face-container"></div>
+            <div class="face-container center-to-square">
+              <div class="face" id="face"></div>
+            </div>
           </div>
+
           <div class="col-12 col-lg-6">
-            <h1>Humaan Interface</h1>
-            <div class="buttons"></div>
+            <div class="face-controls center-to-square">
+
+              <h1>Humaan Interface</h1>
+
+              <div class="field-group">
+                <span class="field-group__label">Foreground Colour</span>
+                <div class="button-group" id="colors-fg"></div>
+              </div>
+
+              <div class="field-group">
+                <span class="field-group__label">Background Colour</span>
+                <div class="button-group" id="colors-bg"></div>
+              </div>
+
+            </div>
           </div>
+
         </div>
       </div>
     </main>

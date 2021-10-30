@@ -5,13 +5,14 @@ $color--dark: rgba(#000,0.8);
 
 $color__background: var(--background);
 $color__foreground: var(--foreground);
+// $color__background: $color--light;
+// $color__foreground: $color--dark;
 
 // Layout
 // -----------------------------------
 $columns: 12;
 $gutter-size: 2rem;
 $grid-breakpoints: (
-  xs: 0,
   sm: 576px,
   md: 768px,
   lg: 992px,

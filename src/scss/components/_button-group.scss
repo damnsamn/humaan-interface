@@ -1,0 +1,13 @@
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gutter-size/2;
+  &__button {
+    border: none;
+    height: 3rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 5px rgba(0,0,0,0.25);
+    width: calc((100% - $gutter-size/2*3)/4);
+    cursor: pointer;
+  }
+}

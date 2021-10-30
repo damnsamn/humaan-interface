@@ -29,20 +29,27 @@ let
 
 const
   width = (gridDivisions + gridPadding * 2) * gridSize,
-  height = width;
+  height = width,
+  renderedEvent = new Event("svgUpdated");
 
 
 
 const draw =
   SVG()
-    .addTo('#face-container')
+    .addTo('#face')
     .size(width, height)
     .id("face-svg")
     .viewbox(0, 0, width, height)
 
-const background = draw.rect(width, height).attr({ fill: faceBackgroundColor })
+const background =
+  draw
+    .rect(width, height)
+    .attr({ fill: faceBackgroundColor })
+    .id("background")
+
 const face =
-  draw.nested()
+  draw
+    .nested()
     .size(gridSize * gridDivisions, gridSize * gridDivisions)
     .move(grid(gridPadding), grid(gridPadding))
     .fill(faceForegroundColor)
@@ -80,7 +87,7 @@ function render() {
     }
 
     await drawEyes(face).then(() => {
-
+      document.dispatchEvent(renderedEvent)
     });
   });
 }
@@ -174,7 +181,6 @@ async function drawEyes(face) {
         .line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH))
         .stroke("#000")
 
-    console.log(eyeList)
     const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH)
     const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
 
@@ -208,8 +214,19 @@ async function drawEyes(face) {
 }
 
 export function setFaceForeground(color) {
-  face.fill(color)
+  faceForegroundColor = color;
+  face.fill(faceForegroundColor)
 }
+
 export function setFaceBackground(color) {
-  background.fill(color)
+  faceBackgroundColor = color;
+  background.fill(faceBackgroundColor)
+}
+
+export function getFaceSVG(radius) {
+  const faceSVG = new SVG(draw.svg())
+  faceSVG.attr("xmlns:svgjs", null)
+  if (radius)
+    faceSVG.find("#background").radius(radius)
+  return faceSVG.svg()
 }
