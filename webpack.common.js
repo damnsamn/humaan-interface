@@ -1,18 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { glob } = require('glob');
+
+const partPaths = glob("")
 
 module.exports = {
-  mode: 'development',
   entry: ['./src/face/face.js', './src/main.js'],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true
-  },
-  devtool: 'inline-source-map',
-  devServer: {
-    static: './dist',
-    watchFiles: ['src/**/*'],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -24,7 +21,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.svg$/i,
+        type: 'asset/inline',
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
       },
       {
