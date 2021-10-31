@@ -17,6 +17,7 @@ import {
   mouthList,
   noseList,
 } from "./parts"
+import _ from "lodash"
 
 export let
   faceBackgroundColor = chooseRandomColor(),
@@ -34,20 +35,20 @@ const
 
 
 
-const draw =
+let draw =
   SVG()
     .addTo('#face')
     .size(width, height)
     .id("face-svg")
     .viewbox(0, 0, width, height)
 
-const background =
+let background =
   draw
     .rect(width, height)
     .attr({ fill: faceBackgroundColor })
     .id("background")
 
-const face =
+let face =
   draw
     .nested()
     .size(gridSize * gridDivisions, gridSize * gridDivisions)
@@ -76,7 +77,7 @@ if (debug) {
 render();
 
 function render() {
-  mouthData = renderPart(face, mouthList, true).then(async (value) => {
+  mouthData = renderPart(face, mouthList).then(async (value) => {
 
     eyeSlots = value.slots;
 
@@ -93,8 +94,9 @@ function render() {
 }
 
 async function renderPart(face, partList) {
-  const i = randomInt(partList.length - 1),
-    partData = partList[i]
+  let partListCopy = _.cloneDeep(partList);
+  const i = randomInt(partListCopy.length - 1),
+    partData = partListCopy[i]
 
   await getSvgFromPath(partData.path).then(value => {
     const
@@ -202,7 +204,6 @@ async function drawEyes(face) {
       const
         x = randomIntHalf(slotW - eyeData.width),
         y = randomIntHalf(slotH - eyeData.height)
-      console.log({ x, y })
       eye.dmove(
         grid(x),
         grid(y)
@@ -224,9 +225,13 @@ export function setFaceBackground(color) {
 }
 
 export function getFaceSVG(radius) {
-  const faceSVG = new SVG(draw.svg())
+  const faceSVG = draw.clone()
   faceSVG.attr("xmlns:svgjs", null)
   if (radius)
     faceSVG.find("#background").radius(radius)
   return faceSVG.svg()
+}
+export function randomiseFaceParts() {
+  face.children().remove()
+  render();
 }

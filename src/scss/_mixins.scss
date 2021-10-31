@@ -37,3 +37,19 @@
     }
   }
 }
+
+@mixin pseudo-border($style, $radius: 0px, $offset: 0px) {
+  position: relative;
+
+  &::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    top: $offset;
+    bottom: $offset;
+    left: $offset;
+    right: $offset;
+    border-radius: $radius;
+    border: $style;
+  }
+}

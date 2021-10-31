@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 * {
   box-sizing: border-box;
@@ -9,7 +9,9 @@ body {
   margin: 0;
   color: $color__foreground;
   background: $color__background;
-  transition: 0.15s ease-in-out;
+  &.colours-applied {
+    transition: color 0.15s ease-in-out, background 0.15s ease-in-out;
+  }
 
   &.text-dark {
     color: $color--dark;
