@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { SVG } from "@svgdotjs/svg.js"
 import {
   debug,
@@ -10,14 +11,16 @@ import {
   chooseRandomColor,
   randomInt,
   randomIntHalf,
-  getSvgFromPath
+  getSvgFromPath,
+  Flip
 } from "./utilities"
 import {
   eyeList,
   mouthList,
   noseList,
 } from "./parts"
-import _ from "lodash"
+
+import _ from "lodash";
 
 export let
   faceBackgroundColor = chooseRandomColor(),
@@ -26,7 +29,8 @@ export let
 let
   mouthData,
   noseData,
-  eyeSlots = []
+  eyeSlots = [],
+  history = []
 
 const
   width = (gridDivisions + gridPadding * 2) * gridSize,
@@ -232,6 +236,21 @@ export function getFaceSVG(radius) {
   return faceSVG.svg()
 }
 export function randomiseFaceParts() {
+  addToHistory();
   face.children().remove()
   render();
+}
+function addToHistory() {
+  const state = Flip.getState("#face-history");
+  console.log(state)
+  const oldFace = draw.clone()
+    .addTo("#face-history")
+    .back()
+    .id("history-" + history.length);
+  // $("#history-" + history.length).offset({ top: 10, left: 10 })
+  history.unshift(oldFace);
+  if (history.length > 5) {
+    history[5].remove();
+  }
+  Flip.from(state);
 }

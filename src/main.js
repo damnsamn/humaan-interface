@@ -50,7 +50,7 @@ $(() => {
     setTimeout(function () { $face.addClass("jiggle") }, 0)
   })
 
-  $("#export").on("click", function() {
+  $("#export").on("click", function () {
     exportSVG(getFaceSVG())
   })
   $(document).on("svgUpdated", function () {
@@ -109,7 +109,7 @@ function updateFavicon() {
 
 function exportSVG(svg) {
   var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-  var svgBlob = new Blob([preface, svg], {type:"image/svg+xml;charset=utf-8"});
+  var svgBlob = new Blob([preface, svg], { type: "image/svg+xml;charset=utf-8" });
   var svgUrl = URL.createObjectURL(svgBlob);
   var downloadLink = document.createElement("a");
   downloadLink.href = svgUrl;

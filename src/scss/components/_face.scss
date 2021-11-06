@@ -16,14 +16,17 @@
 .face-container {
   position: sticky;
   top: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .face {
   pointer-events: auto;
-  border-radius: 10px;
+  border-radius: $border-radius__face;
   overflow: hidden;
-  box-shadow: 0px 2.2px 3.4px rgba(0, 0, 0, 0.031), 0px 5.6px 8.7px rgba(0, 0, 0, 0.044),
-    0px 11.5px 17.7px rgba(0, 0, 0, 0.056), 0px 23.7px 36.5px rgba(0, 0, 0, 0.069), 0px 65px 100px rgba(0, 0, 0, 0.1);
+  box-shadow: $box-shadow__face;
   cursor: pointer;
 
   svg#face-svg {
@@ -39,5 +42,26 @@
   &.jiggle {
     animation: jiggle 0.25s;
     animation: name duration timing-function delay iteration-count direction fill-mode;
+  }
+}
+
+.face-history {
+  margin-top: $gutter-size/2;
+  display: flex;
+  gap: $gutter-size/2;
+  z-index: 1;
+  position: relative;
+
+  > svg {
+    width: calc((100% - $gutter-size/2 * 4) / 5);
+    height: auto;
+    border-radius: $border-radius__face--small;
+    box-shadow: $box-shadow__face;
+
+    @for $n from 2 through 6 {
+      &:nth-child(#{$n}) {
+        opacity: 1 - (0.1 * ($n - 1));
+      }
+    }
   }
 }
