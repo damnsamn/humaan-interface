@@ -21,6 +21,13 @@
   }
 }
 
+@mixin hover-focus {
+  &:hover,
+  &:focus {
+    @content;
+  }
+}
+
 @mixin offset($n) {
   margin-left: (100% * $n/$columns);
 }
