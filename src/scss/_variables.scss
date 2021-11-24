@@ -8,6 +8,15 @@ $color__foreground: var(--foreground);
 
 // Border Radii
 // -----------------------------------
+$transition--long: 0.5s ease-in-out;
+$transition--regular: 0.25s ease-in-out;
+$transition--short: 0.15s ease-in-out;
+
+// Border Radii
+// -----------------------------------
+$border-radius--large: 10px;
+$border-radius--regular: 5px;
+$border-radius--small: 3px;
 $border-radius__face: 3%;
 $border-radius__face--small: 5%;
 

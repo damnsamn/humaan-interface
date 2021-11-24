@@ -215,7 +215,6 @@ async function drawEyes(face) {
       )
       face.flatten()
     })
-    // debugger;
   }
 }
 
@@ -244,10 +243,12 @@ export function randomiseFaceParts() {
 
 export function setFromHistory(id) {
   let historyFace = SVG(`#${id}`).clone();
-  addToHistory();
+  // addToHistory();
   draw.clear();
   background = historyFace.findOne("rect").addTo(draw).id("background");
+  faceBackgroundColor = background.fill();
   face = historyFace.findOne("svg").addTo(draw).id("foreground");
+  faceForegroundColor = face.fill();
   document.dispatchEvent(renderedEvent)
 
 }

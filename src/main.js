@@ -1,16 +1,16 @@
 import $ from "jquery";
+import jqueryColor from 'jquery-color';
 import ColorContrastChecker from "color-contrast-checker";
 import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory } from "./face/face";
 import "./scss/style.scss"
 import { colors } from "./face/config";
 
 let contrastChecker = new ColorContrastChecker()
+// jqueryColor();
 
 $(() => {
-  document.body.style.setProperty("--foreground", faceBackgroundColor)
-  document.body.style.setProperty("--background", faceForegroundColor)
+  setCSSCustomProperties()
   $("body").addClass("colours-applied")
-  setBodyClass()
 
   colors.forEach(color => {
     // If colour is dark, set its disabled colour to be light
@@ -24,41 +24,32 @@ $(() => {
     const fg = $(this).data("foreground");
     const bg = $(this).data("background");
 
-    $(this).siblings().removeClass("active");
-    $(this).addClass("active");
-
-    // if (fg === backgroundColor() || bg === foregroundColor())
-    //   return
-
     if (fg) {
-      $("[data-background").attr("disabled", false);
-      $(`[data-background="${fg}"]`).attr("disabled", true)
-      foregroundColor(fg);
       setFaceBackground(fg)
+      foregroundColor(fg);
     }
     if (bg) {
-      $("[data-foreground").attr("disabled", false);
-      $(`[data-foreground="${bg}"]`).attr("disabled", true)
-      backgroundColor(bg);
       setFaceForeground(bg)
+      backgroundColor(bg);
     }
+
+    setCSSCustomProperties()
     updateFavicon()
   })
 
   $(".face").on("mousedown", function (e) {
-    const $face = $(this);
     e.preventDefault();
     randomiseFaceParts();
+
     faceJiggle();
   })
 
   $(".face-history").on("click", ".face-history__item>svg", function () {
     setFromHistory(this.id);
-    const fg = $("#background").attr("fill");
-    const bg = $("#foreground").attr("fill");
-    // debugger;
-    foregroundColor(fg.toUpperCase())
-    backgroundColor(bg.toUpperCase())
+
+    setCSSCustomProperties()
+    foregroundColor(faceBackgroundColor.toUpperCase())
+    backgroundColor(faceForegroundColor.toUpperCase())
     faceJump();
   })
 
@@ -74,8 +65,10 @@ $(() => {
 function foregroundColor(color = null) {
   // set
   if (color) {
-    document.body.style.setProperty("--foreground", color)
-    setBodyClass()
+    $("[data-background").attr("disabled", false);
+    $(`[data-background="${color}"]`).attr("disabled", true)
+    $("[data-foreground]").removeClass("active")
+    $(`[data-foreground="${color}"]`).addClass("active")
   }
   // get
   else
@@ -85,28 +78,35 @@ function foregroundColor(color = null) {
 function backgroundColor(color = null) {
   // set
   if (color) {
-    document.body.style.setProperty("--background", color)
-    setBodyClass()
+    $("[data-foreground").attr("disabled", false);
+    $(`[data-foreground="${color}"]`).attr("disabled", true)
+    $("[data-background]").removeClass("active")
+    $(`[data-background="${color}"]`).addClass("active")
   }
   // get
   else
     return document.body.style.getPropertyValue("--background")
 }
 
-function setBodyClass() {
+function setCSSCustomProperties() {
+  // console.log(Color)
+  $("body").animate({
+    background: "#ff0000"
+  }, 1000)
+  document.body.style.setProperty("--background", faceForegroundColor)
 
-  if (contrastChecker.isLevelCustom(foregroundColor(), backgroundColor(), 2)) {
-    $("body").removeClass("text-dark").removeClass("text-light")
+  if (contrastChecker.isLevelCustom(faceForegroundColor, faceBackgroundColor, 2)) {
+    document.body.style.setProperty("--foreground", faceBackgroundColor)
     return
   }
 
-  if (contrastChecker.isLevelCustom(backgroundColor(), "#000000", 2)) {
-    $("body").addClass("text-dark").removeClass("text-light")
+  if (contrastChecker.isLevelCustom(faceBackgroundColor, "#000000", 2)) {
+    document.body.style.setProperty("--foreground", "#000000")
     return
   }
 
-  if (contrastChecker.isLevelCustom(backgroundColor(), "#FFFFFF", 2)) {
-    $("body").removeClass("text-dark").addClass("text-light")
+  if (contrastChecker.isLevelCustom(faceBackgroundColor, "#FFFFFF", 2)) {
+    document.body.style.setProperty("--foreground", "#FFFFFF")
     return
   }
 }

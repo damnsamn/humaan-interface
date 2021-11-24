@@ -36,12 +36,14 @@ export class Flip {
     stylesToReset = $children.map((index, el) => {
       return {
         position: $(el).css("position"),
-        transform: $(el).css("transform")
+        transform: $(el).css("transform"),
+        margin: $(el).css("margin"),
       };
     });
     $children.not(".removing").css({
       "position": "static",
       "transform": "none",
+      "margin": 0,
     });
     $children.each(function () {
       stateArray.push({
@@ -108,7 +110,6 @@ export class Flip {
     _.forEach(prevState.children, (value) => {
       const $element = value.$element;
       const oldItem = !_.find(newState.children, { $element }) || $element.hasClass("removing");
-      if($(prevState.selector).children().length>6)debugger;
       if (oldItem)
         oldItems.push({ $element, offset: value.offset });
     });

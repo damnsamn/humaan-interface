@@ -10,7 +10,7 @@ body {
   color: $color__foreground;
   background: $color__background;
   &.colours-applied {
-    transition: color 0.15s ease-in-out, background 0.15s ease-in-out;
+    transition: $transition--regular;
   }
 
   &.text-dark {

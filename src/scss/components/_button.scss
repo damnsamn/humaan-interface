@@ -1,0 +1,29 @@
+.button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  appearance: none;
+  cursor: pointer;
+
+  color: $color__foreground;
+  font-size: 1.125rem;
+  padding: 0.5em 1em;
+  border-radius: $border-radius--regular;
+  transition:  $transition--regular;
+  box-shadow: none;
+  @include pseudo-border(2px solid $color__foreground, inherit);
+  &::before {
+    transition: inherit;
+  }
+
+  @include hover-focus {
+    box-shadow: 0 2px 5px rgba($color--dark, 0.33);
+    transform: translateY(-3px);
+    transition:  $transition--short;
+
+    // background-color: $color__foreground;
+    // color: $color__background;
+  }
+}

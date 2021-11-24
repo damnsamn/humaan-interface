@@ -115,7 +115,7 @@
     @include hover-focus {
       opacity: 1;
       cursor: pointer;
-      transform: translateY(3px);
+      transform: scale(1.05);
       > svg {
         box-shadow: $box-shadow__face--close;
       }
