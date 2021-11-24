@@ -10,6 +10,17 @@
  */
 
 /*!
+ * jQuery Color Animations v2.2.0
+ * https://github.com/jquery/jquery-color
+ *
+ * Copyright OpenJS Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * Date: Sun May 10 09:02:36 2020 +0200
+ */
+
+/*!
  * jQuery JavaScript Library v3.6.0
  * https://jquery.com/
  *
