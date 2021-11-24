@@ -26,16 +26,25 @@ export async function getSvgFromPath(path) {
 }
 export class Flip {
   static transition = 250;
+  static count = 0;
 
   static getState(selector) {
-    const array = [];
+    const stateArray = [];
     const $children = $(selector).children();
+    let stylesToReset = [];
 
-    $children.css("position", "static");
-    // $(this).css("position", "static");
+    stylesToReset = $children.map((index, el) => {
+      return {
+        position: $(el).css("position"),
+        transform: $(el).css("transform")
+      };
+    });
+    $children.not(".removing").css({
+      "position": "static",
+      "transform": "none",
+    });
     $children.each(function () {
-      // $(this).css("position", "static");
-      array.push({
+      stateArray.push({
         offset: (() => {
           const parentOffset = $(this).parent().offset();
           const thisOffset = $(this).offset();
@@ -44,11 +53,12 @@ export class Flip {
         })(),
         $element: $(this),
       })
-      // $(this).css("position", position);
-
+    })
+    $children.not(".removing").each((index, el) => {
+      $(el).css(stylesToReset[index])
     })
 
-    return { selector, children: array };
+    return { selector, children: stateArray };
   }
 
   static from(prevState) {
@@ -61,18 +71,7 @@ export class Flip {
       if (newItem)
         newItems.push($element)
     });
-    newItems.forEach(($item) => {
-      $item
-        .css("transform", "scale(0)")
-
-      setTimeout(() => {
-        $item
-          .css({
-            "transition": "transform " + Flip.transition / 1000 + "s ease",
-            "transform": "scale(1)"
-          })
-      }, 0)
-    })
+    newItems.forEach(($item) => $item.removeAttr("style"))
 
 
 
@@ -85,7 +84,6 @@ export class Flip {
     });
     // merge these
     commonItems.forEach((item) => {
-      console.log(item.$element)
       const currentLeft = item.$element.css("left");
       const currentTop = item.$element.css("top");
       item.$element.css({
@@ -99,7 +97,7 @@ export class Flip {
       },
         Flip.transition,
         function () {
-          $(this).removeAttr("style")
+          $(this).not(".removing").removeAttr("style")
         })
     })
 
@@ -109,28 +107,24 @@ export class Flip {
     const oldItems = [];
     _.forEach(prevState.children, (value) => {
       const $element = value.$element;
-      const oldItem = !_.find(newState.children, { $element });
+      const oldItem = !_.find(newState.children, { $element }) || $element.hasClass("removing");
+      if($(prevState.selector).children().length>6)debugger;
       if (oldItem)
-        // debugger;
         oldItems.push({ $element, offset: value.offset });
     });
     oldItems.forEach((item) => {
       $(prevState.selector).append(item.$element);
-
       item.$element
+        .addClass("removing")
         .css({
-          "transition": "transform " + Flip.transition / 1000 + "s ease",
           "position": "absolute",
           "top": item.offset.top,
           "left": item.offset.left,
-          // "z-index":
-        })
-      setTimeout(() => {
-        item.$element.css("transform", "scale(0)");
-      }, 0)
+        });
       setTimeout(() => {
         item.$element.remove();
       }, Flip.transition)
     })
+    this.count++;
   }
 }

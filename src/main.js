@@ -1,6 +1,6 @@
 import $ from "jquery";
 import ColorContrastChecker from "color-contrast-checker";
-import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts } from "./face/face";
+import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory } from "./face/face";
 import "./scss/style.scss"
 import { colors } from "./face/config";
 
@@ -13,8 +13,11 @@ $(() => {
   setBodyClass()
 
   colors.forEach(color => {
-    $("#colors-fg").append(`<button class="button-group__button ${color === faceForegroundColor ? "active" : ""}" data-background="${color}" style="background-color: ${color}" ${color === faceBackgroundColor ? "disabled" : ""}></button>`)
-    $("#colors-bg").append(`<button class="button-group__button ${color === faceBackgroundColor ? "active" : ""}" data-foreground="${color}" style="background-color: ${color}" ${color === faceForegroundColor ? "disabled" : ""}></button>`)
+    // If colour is dark, set its disabled colour to be light
+    let disabledLight = contrastChecker.isLevelCustom(color, "#ffffff", 4.5);
+
+    $("#colors-fg").append(`<button class="button-group__button ${color === faceForegroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-background="${color}" style="background-color: ${color}" ${color === faceBackgroundColor ? "disabled" : ""}></button>`)
+    $("#colors-bg").append(`<button class="button-group__button ${color === faceBackgroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-foreground="${color}" style="background-color: ${color}" ${color === faceForegroundColor ? "disabled" : ""}></button>`)
   });
 
   $(".button-group__button").on("click", function () {
@@ -46,8 +49,17 @@ $(() => {
     const $face = $(this);
     e.preventDefault();
     randomiseFaceParts();
-    $face.removeClass("jiggle");
-    setTimeout(function () { $face.addClass("jiggle") }, 0)
+    faceJiggle();
+  })
+
+  $(".face-history").on("click", ".face-history__item>svg", function () {
+    setFromHistory(this.id);
+    const fg = $("#background").attr("fill");
+    const bg = $("#foreground").attr("fill");
+    // debugger;
+    foregroundColor(fg.toUpperCase())
+    backgroundColor(bg.toUpperCase())
+    faceJump();
   })
 
   $("#export").on("click", function () {
@@ -97,6 +109,15 @@ function setBodyClass() {
     $("body").removeClass("text-dark").addClass("text-light")
     return
   }
+}
+
+function faceJiggle() {
+  $(".face").removeClass("jiggle").removeClass("jump");
+  setTimeout(function () { $(".face").addClass("jiggle") }, 0);
+}
+function faceJump() {
+  $(".face").removeClass("jiggle").removeClass("jump");
+  setTimeout(function () { $(".face").addClass("jump") }, 0);
 }
 
 function updateFavicon() {

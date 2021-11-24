@@ -14,6 +14,7 @@
     // border: 2px solid #fff;
 
     &[disabled] {
+      box-shadow: none;
       &::before {
         content: "";
         position: absolute;
@@ -22,9 +23,15 @@
         right: 0;
         bottom: 0;
         background: rgba(65, 65, 65, 0.4);
-        border: 2px solid rgba(#fff, 0.6);
+        border: 2px solid rgba(65, 65, 65, 0.2);
         border-radius: inherit;
         cursor: not-allowed;
+      }
+      &.disabled-light {
+        &::before {
+          background: rgba(200, 200, 200, 0.4);
+          border-color: rgba(65, 65, 65, 0.4);
+        }
       }
     }
 

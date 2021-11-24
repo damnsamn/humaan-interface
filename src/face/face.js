@@ -58,6 +58,7 @@ let face =
     .size(gridSize * gridDivisions, gridSize * gridDivisions)
     .move(grid(gridPadding), grid(gridPadding))
     .fill(faceForegroundColor)
+    .id("foreground");
 
 
 // Grid
@@ -240,6 +241,20 @@ export function randomiseFaceParts() {
   face.children().remove()
   render();
 }
+
+export function setFromHistory(id) {
+  let historyFace = SVG(`#${id}`).clone();
+  addToHistory();
+
+  // background.replace(SVG(historyFace.find("rect")));
+  // face.replace(SVG(historyFace.find("svg")));
+  draw.clear();
+  background = historyFace.findOne("rect").addTo(draw).id("background");
+  face = historyFace.findOne("svg").addTo(draw).id("foreground");
+  // draw.
+  // debugger;
+  // draw.
+}
 function addToHistory() {
   const state = Flip.getState("#face-history");
   console.log(state)
@@ -247,10 +262,10 @@ function addToHistory() {
     .addTo("#face-history")
     .back()
     .id("history-" + history.length);
-  // $("#history-" + history.length).offset({ top: 10, left: 10 })
+  $("#history-" + history.length).wrap("<div class='face-history__item' tabindex='0'></div>")
   history.unshift(oldFace);
   if (history.length > 5) {
-    history[5].remove();
+    history[5].parent().remove();
   }
   Flip.from(state);
 }
