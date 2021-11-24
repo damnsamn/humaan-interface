@@ -245,15 +245,11 @@ export function randomiseFaceParts() {
 export function setFromHistory(id) {
   let historyFace = SVG(`#${id}`).clone();
   addToHistory();
-
-  // background.replace(SVG(historyFace.find("rect")));
-  // face.replace(SVG(historyFace.find("svg")));
   draw.clear();
   background = historyFace.findOne("rect").addTo(draw).id("background");
   face = historyFace.findOne("svg").addTo(draw).id("foreground");
-  // draw.
-  // debugger;
-  // draw.
+  document.dispatchEvent(renderedEvent)
+
 }
 function addToHistory() {
   const state = Flip.getState("#face-history");
