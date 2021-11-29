@@ -62,7 +62,7 @@
     display: block;
 
     > * {
-      transition: 0.15s ease-in-out;
+      transition: $transition--short;
     }
   }
 

@@ -10,7 +10,7 @@ body {
   color: $color__foreground;
   background: $color__background;
   &.colours-applied {
-    transition: background $transition--regular;
+    transition: background $transition--short;
   }
 
   &.text-dark {
@@ -23,7 +23,7 @@ body {
 
 @for $n from 1 through 6 {
   h#{$n} {
-    transition: color $transition--regular;
+    transition: color $transition--short;
     &:first-child {
       margin-top: 0;
     }
