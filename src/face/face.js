@@ -82,13 +82,13 @@ if (debug) {
 render();
 
 function render() {
-  mouthData = renderPart(face, mouthList).then(async (value) => {
+  mouthData = renderPart(face, mouthList, true).then(async (mouth) => {
 
-    eyeSlots = value.slots;
+    eyeSlots = mouth.slots;
 
-    if (!value.skipNose) {
-      noseData = await renderPart(face, noseList).then((value) => {
-        eyeSlots = value.slots;
+    if (!mouth.skipNose) {
+      noseData = await renderPart(face, noseList).then((nose) => {
+        eyeSlots = nose.slots;
       });
     }
 
@@ -98,14 +98,15 @@ function render() {
   });
 }
 
-async function renderPart(face, partList) {
+async function renderPart(face, partList, shouldFlipY) {
   let partListCopy = _.cloneDeep(partList);
   const i = randomInt(partListCopy.length - 1),
     partData = partListCopy[i]
 
   await getSvgFromPath(partData.path).then(value => {
     const
-      flipX = randomInt(1)
+      flipX = randomInt(1),
+      flipY = randomInt(1)
 
     // Flip bounds
     if (flipX)
@@ -121,6 +122,10 @@ async function renderPart(face, partList) {
 
     // Flip part
     flipX && part.children().children().flip("x")
+    if (shouldFlipY && flipY) {
+      // flipX && part.children().children().flip("x")
+      part.children().children().rotate(180)
+    }
 
     // Position part
     const
