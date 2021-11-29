@@ -1,16 +1,15 @@
 import $ from "jquery";
-import jqueryColor from 'jquery-color';
 import ColorContrastChecker from "color-contrast-checker";
 import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory } from "./face/face";
 import "./scss/style.scss"
 import { colors } from "./face/config";
 
 let contrastChecker = new ColorContrastChecker()
-// jqueryColor();
 
 $(() => {
   setCSSCustomProperties()
-  $("body").addClass("colours-applied")
+  setTimeout(()=>$("body").addClass("colours-applied"), 0)
+
 
   colors.forEach(color => {
     // If colour is dark, set its disabled colour to be light
@@ -89,10 +88,6 @@ function backgroundColor(color = null) {
 }
 
 function setCSSCustomProperties() {
-  // console.log(Color)
-  $("body").animate({
-    background: "#ff0000"
-  }, 1000)
   document.body.style.setProperty("--background", faceForegroundColor)
 
   if (contrastChecker.isLevelCustom(faceForegroundColor, faceBackgroundColor, 2)) {

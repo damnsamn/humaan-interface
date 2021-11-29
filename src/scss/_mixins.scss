@@ -1,5 +1,6 @@
 @use "sass:map";
 @use "sass:color";
+@use "sass:string";
 
 @mixin breakpoint($bp) {
   @media (min-width: map.get($grid-breakpoints, $bp)) {
@@ -60,3 +61,9 @@
     border: $style;
   }
 }
+
+@function encode-hex($color) {
+  $string: "" + $color;
+  @return "%23" + string.slice($string, 2,7);
+}
+@debug encode-hex(#000000);

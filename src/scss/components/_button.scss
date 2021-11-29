@@ -7,13 +7,16 @@
   appearance: none;
   cursor: pointer;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
   color: $color__foreground;
   font-size: 1.125rem;
   padding: 0.5em 1em;
   border-radius: $border-radius--regular;
-  transition:  $transition--regular;
   box-shadow: none;
-  @include pseudo-border(2px solid $color__foreground, inherit);
+  @include pseudo-border(3px solid $color__foreground, inherit);
   &::before {
     transition: inherit;
   }
@@ -21,9 +24,28 @@
   @include hover-focus {
     box-shadow: 0 2px 5px rgba($color--dark, 0.33);
     transform: translateY(-3px);
-    transition:  $transition--short;
+    transition: $transition--short;
+  }
 
-    // background-color: $color__foreground;
-    // color: $color__background;
+  > i {
+    display: inline-block;
+    height: 1em;
+    margin: 0 0.5em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+
+    > svg {
+      width: auto;
+      height: 100%;
+    }
+  }
+
+  body.colours-applied & {
+    transition: $transition--regular;
   }
 }

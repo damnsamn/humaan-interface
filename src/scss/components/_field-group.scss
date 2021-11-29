@@ -4,6 +4,7 @@
   margin-top: 2.5rem;
 
   &__label {
+    transition: color $transition--regular;
     font-weight: 600;
     + * {
       margin-top: 0.8rem;
