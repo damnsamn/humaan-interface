@@ -2,8 +2,8 @@
 @use "sass:color";
 @use "sass:string";
 
-@mixin breakpoint($bp) {
-  @media (min-width: map.get($grid-breakpoints, $bp)) {
+@mixin breakpoint($bp-name) {
+  @media (min-width: map.get($grid-breakpoints, $bp-name)) {
     @content;
   }
 }
