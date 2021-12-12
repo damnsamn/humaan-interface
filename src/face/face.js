@@ -22,9 +22,16 @@ import {
 
 import _ from "lodash";
 
+export const Moods = {
+  RANDOM: 0,
+  HAPPY: 1,
+  SAD: 2,
+};
+
 export let
   faceBackgroundColor = chooseRandomColor(),
-  faceForegroundColor = chooseRandomColor()
+  faceForegroundColor = chooseRandomColor(),
+  mood = Moods.RANDOM;
 
 let
   mouthData,
@@ -106,7 +113,11 @@ async function renderPart(face, partList, shouldFlipY) {
   await getSvgFromPath(partData.path).then(value => {
     const
       flipX = randomInt(1),
-      flipY = randomInt(1)
+      flipY =
+        mood === Moods.RANDOM ? randomInt(1) :
+          mood === Moods.HAPPY ? 0 :
+            mood === Moods.HAPPY ? 1 :
+              false;
 
     // Flip bounds
     if (flipX)
