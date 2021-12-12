@@ -1,6 +1,6 @@
 import $ from "jquery";
 import ColorContrastChecker from "color-contrast-checker";
-import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory } from "./face/face";
+import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory, showGrid, hideGrid } from "./face/face";
 import "./scss/style.scss"
 import { colors } from "./face/config";
 
@@ -8,18 +8,18 @@ let contrastChecker = new ColorContrastChecker()
 
 $(() => {
   setCSSCustomProperties()
-  setTimeout(()=>$("body").addClass("colours-applied"), 0)
+  setTimeout(() => $("body").addClass("colours-applied"), 0)
 
 
   colors.forEach(color => {
     // If colour is dark, set its disabled colour to be light
     let disabledLight = contrastChecker.isLevelCustom(color, "#ffffff", 4.5);
 
-    $("#colors-fg").append(`<button class="button-group__button ${color === faceForegroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-background="${color}" style="background-color: ${color}" ${color === faceBackgroundColor ? "disabled" : ""}></button>`)
-    $("#colors-bg").append(`<button class="button-group__button ${color === faceBackgroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-foreground="${color}" style="background-color: ${color}" ${color === faceForegroundColor ? "disabled" : ""}></button>`)
+    $("#colors-fg").append(`<button class="palette-group__button ${color === faceForegroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-background="${color}" style="background-color: ${color}" ${color === faceBackgroundColor ? "disabled" : ""}></button>`)
+    $("#colors-bg").append(`<button class="palette-group__button ${color === faceBackgroundColor ? "active" : ""} ${disabledLight ? "disabled-light" : ""}" data-foreground="${color}" style="background-color: ${color}" ${color === faceForegroundColor ? "disabled" : ""}></button>`)
   });
 
-  $(".button-group__button").on("click", function () {
+  $(".palette-group__button").on("click", function () {
     const fg = $(this).data("foreground");
     const bg = $(this).data("background");
 
@@ -36,10 +36,8 @@ $(() => {
     updateFavicon()
   })
 
-  $(".face").on("mousedown", function (e) {
-    e.preventDefault();
+  $("#randomise").on("click", function (e) {
     randomiseFaceParts();
-
     faceJiggle();
   })
 

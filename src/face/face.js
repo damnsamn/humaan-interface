@@ -37,7 +37,7 @@ let
   mouthData,
   noseData,
   eyeSlots = [],
-  history = []
+  history = [];
 
 const
   width = (gridDivisions + gridPadding * 2) * gridSize,
@@ -51,13 +51,13 @@ let draw =
     .addTo('#face')
     .size(width, height)
     .id("face-svg")
-    .viewbox(0, 0, width, height)
+    .viewbox(0, 0, width, height);
 
 let background =
   draw
     .rect(width, height)
     .attr({ fill: faceBackgroundColor })
-    .id("background")
+    .id("background");
 
 let face =
   draw
@@ -67,26 +67,52 @@ let face =
     .fill(faceForegroundColor)
     .id("foreground");
 
+let gridLines =
+  draw
+    .nested()
+    .move(grid(gridPadding), grid(gridPadding))
+    .stroke(faceForegroundColor)
+    .opacity(0.8)
+    .remove();
 
-// Grid
-// --------------------------------------------------------
-if (debug) {
-  for (let i = 1; i < gridDivisions; i++) {
-    face
-      .line(i * gridSize, 0, i * gridSize, face.height())
-      .stroke("#fff")
-    face
-      .line(0, i * gridSize, face.width(), i * gridSize)
-      .stroke("#fff")
-  }
-  face
+for (let i = 1; i < gridDivisions; i++) {
+  gridLines
+    .line(i * gridSize, 0, i * gridSize, gridSize * gridDivisions);
+  gridLines
+    .line(0, i * gridSize, gridSize * gridDivisions, i * gridSize);
+  gridLines
     .rect(gridDivisions * gridSize, gridDivisions * gridSize)
-    .fill({ color: null, opacity: 0 })
-    .stroke("#fff")
+    .fill({ color: null, opacity: 0 });
 }
-// --------------------------------------------------------
+
 
 render();
+
+$("#face-svg").on("mouseover", "#foreground > *", function (e) {
+  $(this).addClass("hover");
+  showGrid();
+});
+$("#face-svg").on("mouseout", "#foreground > *", function (e) {
+  if (!$(this).hasClass("dragging")) {
+    $(this).removeClass("hover");
+    hideGrid();
+  }
+});
+$("#face-svg").on("mousedown", "#foreground > *", function (e) {
+  let $svg = $(this);
+  const scale = draw.width() / $("#face-svg").width();
+  $(this).removeClass("hover");
+  $(this).addClass("dragging");
+  $(this).on("mousemove", (e) => {
+    // Do the movement
+  });
+});
+$("#face-svg").on("mouseup", "#foreground > *", function (e) {
+  $(this).addClass("hover");
+  $(this).removeClass("dragging");
+  $(this).off("mousemove");
+});
+
 
 function render() {
   mouthData = renderPart(face, mouthList, true).then(async (mouth) => {
@@ -100,7 +126,7 @@ function render() {
     }
 
     await drawEyes(face).then(() => {
-      document.dispatchEvent(renderedEvent)
+      document.dispatchEvent(renderedEvent);
     });
   });
 }
@@ -185,7 +211,7 @@ async function renderPart(face, partList, shouldFlipY) {
         }
       }
     }
-    face.flatten()
+    // face.flatten()
 
   })
   return partData
@@ -229,7 +255,7 @@ async function drawEyes(face) {
         grid(x),
         grid(y)
       )
-      face.flatten()
+      // face.flatten()
     })
   }
 }
@@ -237,6 +263,7 @@ async function drawEyes(face) {
 export function setFaceForeground(color) {
   faceForegroundColor = color;
   face.fill(faceForegroundColor)
+  gridLines.stroke(faceForegroundColor)
 }
 
 export function setFaceBackground(color) {
@@ -245,8 +272,8 @@ export function setFaceBackground(color) {
 }
 
 export function getFaceSVG(radius) {
-  const faceSVG = draw.clone()
-  faceSVG.attr("xmlns:svgjs", null)
+  const faceSVG = draw.clone();
+  faceSVG.attr("xmlns:svgjs", null);
   if (radius)
     faceSVG.find("#background").radius(radius)
   return faceSVG.svg()
@@ -270,7 +297,6 @@ export function setFromHistory(id) {
 }
 function addToHistory() {
   const state = Flip.getState("#face-history");
-  console.log(state)
   const oldFace = draw.clone()
     .addTo("#face-history")
     .back()
@@ -281,4 +307,12 @@ function addToHistory() {
     history[5].parent().remove();
   }
   Flip.from(state);
+}
+
+export function showGrid() {
+  gridLines.addTo(draw);
+  gridLines.backward();
+}
+export function hideGrid() {
+  gridLines.remove();
 }

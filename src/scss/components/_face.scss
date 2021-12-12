@@ -42,7 +42,6 @@
   top: 0;
   @include breakpoint(lg) {
     min-height: 100vh;
-
   }
   // display: flex;
   flex-direction: column;
@@ -54,15 +53,22 @@
   border-radius: $border-radius__face;
   overflow: hidden;
   box-shadow: $box-shadow__face;
-  cursor: pointer;
 
   svg#face-svg {
     width: 100%;
     height: auto;
     display: block;
+    position: relative;
 
     > * {
       transition: $transition--short;
+    }
+
+    #foreground > * {
+      &.hover {
+        opacity: 0.6;
+        cursor: grab;
+      }
     }
   }
 
