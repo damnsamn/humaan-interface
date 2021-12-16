@@ -99,18 +99,36 @@ $("#face-svg").on("mouseout", "#foreground > *", function (e) {
   }
 });
 $("#face-svg").on("mousedown", "#foreground > *", function (e) {
-  let $svg = $(this);
+  let $part = $(this);
+  let $face = $("#face-svg");
   const scale = draw.width() / $("#face-svg").width();
-  $(this).removeClass("hover");
+  // const scale = 1;
+  let startX = e.offsetX * scale;
+  let startY = e.offsetY * scale;
+  console.log({ startX, startY })
   $(this).addClass("dragging");
-  $(this).on("mousemove", (e) => {
-    // Do the movement
+
+  $face.on("mousemove", (e) => {
+    const newX = e.offsetX * scale - gridPadding * gridSize;
+    const newY = e.offsetY * scale - gridPadding * gridSize;
+
+    const gridX = Math.round(newX / (gridSize / 2));
+    const gridY = Math.round(newY / (gridSize / 2));
+
+    console.log({ gridX, gridY });
+
+    $part[0].instance.x(grid(gridX * 0.5))
+    $part[0].instance.y(grid(gridY * 0.5))
+
   });
-});
-$("#face-svg").on("mouseup", "#foreground > *", function (e) {
-  $(this).addClass("hover");
-  $(this).removeClass("dragging");
-  $(this).off("mousemove");
+
+  $(window).on("mouseup", () => {
+    // $part.addClass("hover");
+    $part.removeClass("dragging");
+    $face.off("mousemove");
+    $(window).off("mouseup");
+  });
+
 });
 
 
