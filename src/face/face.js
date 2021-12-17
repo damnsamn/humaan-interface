@@ -90,17 +90,17 @@ render();
 
 
 let draggingPart;
-$("#face-svg").on("mouseover", "#foreground > *", function (e) {
+$("#face-svg").on("mouseover touchstart", "#foreground > *", function (e) {
   if (!draggingPart)
     $(this).addClass("hover");
 });
-$("#face-svg").on("mouseout", "#foreground > *", function (e) {
+$("#face-svg").on("mouseout touchend", "#foreground > *", function (e) {
   if (!draggingPart) {
     $(this).removeClass("hover");
     hideGrid();
   }
 });
-$("#face-svg").on("mousedown", "#foreground > *", function (e) {
+$("#face-svg").on("mousedown touchstart", "#foreground > *", function (e) {
   showGrid();
 
   draggingPart = true;
@@ -113,13 +113,17 @@ $("#face-svg").on("mousedown", "#foreground > *", function (e) {
   $thisPart.front();
   $this.addClass("dragging");
 
+  setTouchEventOffsets(e, $face);
+
   const startX = e.offsetX * scale;
   const startY = e.offsetY * scale;
   const startOffsetX = startX - ($thisPart.x() + gridPadding * gridSize);
   const startOffsetY = startY - ($thisPart.y() + gridPadding * gridSize);
 
 
-  $face.on("mousemove", (e) => {
+  $face.on("mousemove touchmove", (e) => {
+    e.preventDefault();
+    setTouchEventOffsets(e, $face);
     const newX = e.offsetX * scale - gridPadding * gridSize - startOffsetX;
     const newY = e.offsetY * scale - gridPadding * gridSize - startOffsetY;
 
@@ -133,14 +137,14 @@ $("#face-svg").on("mousedown", "#foreground > *", function (e) {
 
   });
 
-  $(window).on("mouseup", (e) => {
+  $(window).on("mouseup touchend", (e) => {
     hideGrid();
     $this.removeClass("hover");
 
     $this.removeClass("dragging");
-    $face.off("mousemove");
+    $face.off("mousemove touchmove");
     draggingPart = null;
-    $(window).off("mouseup");
+    $(window).off("mouseup touchend");
 
     document.dispatchEvent(renderedEvent);
   });
@@ -354,4 +358,11 @@ export function showGrid() {
 }
 export function hideGrid() {
   gridLines.remove();
+}
+function setTouchEventOffsets(e, $parent) {
+  let touch = e.originalEvent.touches[0];
+  if (touch) {
+    e.offsetX = touch.pageX - $parent.offset().left;
+    e.offsetY = touch.pageY - $parent.offset().top;
+  }
 }
