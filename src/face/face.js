@@ -90,7 +90,6 @@ render();
 
 $("#face-svg").on("mouseover", "#foreground > *", function (e) {
   $(this).addClass("hover");
-  showGrid();
 });
 $("#face-svg").on("mouseout", "#foreground > *", function (e) {
   if (!$(this).hasClass("dragging")) {
@@ -99,18 +98,22 @@ $("#face-svg").on("mouseout", "#foreground > *", function (e) {
   }
 });
 $("#face-svg").on("mousedown", "#foreground > *", function (e) {
+  showGrid();
+
   let $part = $(this);
   let $face = $("#face-svg");
   const scale = draw.width() / $("#face-svg").width();
-  // const scale = 1;
-  let startX = e.offsetX * scale;
-  let startY = e.offsetY * scale;
-  console.log({ startX, startY })
+
+  const startX = e.offsetX * scale;
+  const startY = e.offsetY * scale;
+  const startOffsetX = startX - ($part[0].instance.x() + gridPadding * gridSize);
+  const startOffsetY = startY - ($part[0].instance.y() + gridPadding * gridSize);
+
   $(this).addClass("dragging");
 
   $face.on("mousemove", (e) => {
-    const newX = e.offsetX * scale - gridPadding * gridSize;
-    const newY = e.offsetY * scale - gridPadding * gridSize;
+    const newX = e.offsetX * scale - gridPadding * gridSize - startOffsetX;
+    const newY = e.offsetY * scale - gridPadding * gridSize - startOffsetY;
 
     const gridX = Math.round(newX / (gridSize / 2));
     const gridY = Math.round(newY / (gridSize / 2));
@@ -122,11 +125,17 @@ $("#face-svg").on("mousedown", "#foreground > *", function (e) {
 
   });
 
-  $(window).on("mouseup", () => {
-    // $part.addClass("hover");
+  $(window).on("mouseup", (e) => {
+    hideGrid();
+
     $part.removeClass("dragging");
     $face.off("mousemove");
     $(window).off("mouseup");
+    console.log({same: $(e.target).parent()[0],other:$part[0],parent:$(e.target).parent(), $part})
+    if (!$(e.target).parent().is($part))
+      $part.removeClass("hover");
+
+    document.dispatchEvent(renderedEvent);
   });
 
 });
@@ -290,10 +299,14 @@ export function setFaceBackground(color) {
 }
 
 export function getFaceSVG(radius) {
+  let $hoveredItems = $("#face-svg .hover");
+  $hoveredItems.removeClass("hover")
   const faceSVG = draw.clone();
   faceSVG.attr("xmlns:svgjs", null);
   if (radius)
     faceSVG.find("#background").radius(radius)
+
+  $hoveredItems.addClass("hover")
   return faceSVG.svg()
 }
 export function randomiseFaceParts() {

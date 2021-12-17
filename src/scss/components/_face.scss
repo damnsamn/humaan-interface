@@ -65,13 +65,15 @@
     }
 
     #foreground > * {
+      cursor: grab;
+
       &.hover {
         opacity: 0.6;
-        cursor: grab;
+      }
 
-        &.dragging {
-          cursor: grabbing;
-        }
+      &.dragging {
+        opacity: 0.6;
+        cursor: grabbing;
       }
     }
   }
