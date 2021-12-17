@@ -88,11 +88,14 @@ for (let i = 1; i < gridDivisions; i++) {
 
 render();
 
+
+let draggingPart;
 $("#face-svg").on("mouseover", "#foreground > *", function (e) {
-  $(this).addClass("hover");
+  if (!draggingPart)
+    $(this).addClass("hover");
 });
 $("#face-svg").on("mouseout", "#foreground > *", function (e) {
-  if (!$(this).hasClass("dragging")) {
+  if (!draggingPart) {
     $(this).removeClass("hover");
     hideGrid();
   }
@@ -100,16 +103,21 @@ $("#face-svg").on("mouseout", "#foreground > *", function (e) {
 $("#face-svg").on("mousedown", "#foreground > *", function (e) {
   showGrid();
 
-  let $part = $(this);
+  draggingPart = true;
+
+  let $this = $(this);
+  let $thisPart = $this[0].instance;
   let $face = $("#face-svg");
   const scale = draw.width() / $("#face-svg").width();
 
+  $thisPart.front();
+  $this.addClass("dragging");
+
   const startX = e.offsetX * scale;
   const startY = e.offsetY * scale;
-  const startOffsetX = startX - ($part[0].instance.x() + gridPadding * gridSize);
-  const startOffsetY = startY - ($part[0].instance.y() + gridPadding * gridSize);
+  const startOffsetX = startX - ($thisPart.x() + gridPadding * gridSize);
+  const startOffsetY = startY - ($thisPart.y() + gridPadding * gridSize);
 
-  $(this).addClass("dragging");
 
   $face.on("mousemove", (e) => {
     const newX = e.offsetX * scale - gridPadding * gridSize - startOffsetX;
@@ -118,22 +126,23 @@ $("#face-svg").on("mousedown", "#foreground > *", function (e) {
     const gridX = Math.round(newX / (gridSize / 2));
     const gridY = Math.round(newY / (gridSize / 2));
 
-    console.log({ gridX, gridY });
+    console.log({ gridX, gridY, partWidth: $thisPart.width() / gridSize })
 
-    $part[0].instance.x(grid(gridX * 0.5))
-    $part[0].instance.y(grid(gridY * 0.5))
+    if (!(gridX / 2 < 0) && !(gridX / 2 > gridDivisions - $thisPart.width() / gridSize))
+      $thisPart.x(grid(gridX * 0.5))
+    if (!(gridY / 2 < 0) && !(gridY / 2 > gridDivisions - $thisPart.height() / gridSize))
+      $thisPart.y(grid(gridY * 0.5))
 
   });
 
   $(window).on("mouseup", (e) => {
     hideGrid();
+    $this.removeClass("hover");
 
-    $part.removeClass("dragging");
+    $this.removeClass("dragging");
     $face.off("mousemove");
+    draggingPart = null;
     $(window).off("mouseup");
-    console.log({same: $(e.target).parent()[0],other:$part[0],parent:$(e.target).parent(), $part})
-    if (!$(e.target).parent().is($part))
-      $part.removeClass("hover");
 
     document.dispatchEvent(renderedEvent);
   });
@@ -182,7 +191,7 @@ async function renderPart(face, partList, shouldFlipY) {
         .nested()
         .svg(value)
         .move(grid(partData.boundX), grid(partData.boundY))
-        .size(grid(partData.width), grid(partData.height))
+        .size(grid(partData.width), grid(partData.height));
 
     // Flip part
     flipX && part.children().children().flip("x")
@@ -238,7 +247,7 @@ async function renderPart(face, partList, shouldFlipY) {
         }
       }
     }
-    // face.flatten()
+    part.flatten()
 
   })
   return partData
@@ -268,7 +277,7 @@ async function drawEyes(face) {
         face.nested()
           .svg(value)
           .size(grid(eyeData.width), grid(eyeData.height))
-          .move(grid(slotX), grid(slotY))
+          .move(grid(slotX), grid(slotY));
 
 
       // Flip part
@@ -282,7 +291,7 @@ async function drawEyes(face) {
         grid(x),
         grid(y)
       )
-      // face.flatten()
+      eye.flatten()
     })
   }
 }
@@ -300,9 +309,10 @@ export function setFaceBackground(color) {
 
 export function getFaceSVG(radius) {
   let $hoveredItems = $("#face-svg .hover");
-  $hoveredItems.removeClass("hover")
+  $hoveredItems.removeClass("hover");
   const faceSVG = draw.clone();
   faceSVG.attr("xmlns:svgjs", null);
+
   if (radius)
     faceSVG.find("#background").radius(radius)
 
