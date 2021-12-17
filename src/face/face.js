@@ -126,8 +126,6 @@ $("#face-svg").on("mousedown", "#foreground > *", function (e) {
     const gridX = Math.round(newX / (gridSize / 2));
     const gridY = Math.round(newY / (gridSize / 2));
 
-    console.log({ gridX, gridY, partWidth: $thisPart.width() / gridSize })
-
     if (!(gridX / 2 < 0) && !(gridX / 2 > gridDivisions - $thisPart.width() / gridSize))
       $thisPart.x(grid(gridX * 0.5))
     if (!(gridY / 2 < 0) && !(gridY / 2 > gridDivisions - $thisPart.height() / gridSize))
