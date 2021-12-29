@@ -100,6 +100,7 @@ $("#face-svg").on("mouseout touchend", "#foreground > *", function (e) {
     hideGrid();
   }
 });
+
 $("#face-svg").on("mousedown touchstart", "#foreground > *", function (e) {
   showGrid();
 
@@ -110,10 +111,17 @@ $("#face-svg").on("mousedown touchstart", "#foreground > *", function (e) {
   let $face = $("#face-svg");
   const scale = draw.width() / $("#face-svg").width();
 
+  let outline = $thisPart
+    .rect($thisPart.width(), $thisPart.height())
+    .fill('transparent')
+    .stroke({ color: faceForegroundColor, width: 2 * scale })
+    .id('outline');
+
   $thisPart.front();
   $this.addClass("dragging");
 
-  setTouchEventOffsets(e, $face);
+  if (e.originalEvent.touches)
+    setTouchEventOffsets(e, $face);
 
   const startX = e.offsetX * scale;
   const startY = e.offsetY * scale;
@@ -123,7 +131,10 @@ $("#face-svg").on("mousedown touchstart", "#foreground > *", function (e) {
 
   $face.on("mousemove touchmove", (e) => {
     e.preventDefault();
-    setTouchEventOffsets(e, $face);
+
+    if (e.originalEvent.touches)
+      setTouchEventOffsets(e, $face);
+
     const newX = e.offsetX * scale - gridPadding * gridSize - startOffsetX;
     const newY = e.offsetY * scale - gridPadding * gridSize - startOffsetY;
 
@@ -139,8 +150,10 @@ $("#face-svg").on("mousedown touchstart", "#foreground > *", function (e) {
 
   $(window).on("mouseup touchend", (e) => {
     hideGrid();
+    $thisPart
+      .find("#outline")
+      .remove();
     $this.removeClass("hover");
-
     $this.removeClass("dragging");
     $face.off("mousemove touchmove");
     draggingPart = null;

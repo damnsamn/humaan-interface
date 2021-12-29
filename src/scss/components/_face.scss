@@ -68,12 +68,16 @@
       cursor: grab;
 
       &.hover {
-        opacity: 0.6;
+        > path {
+          opacity: 0.6;
+        }
       }
 
       &.dragging {
-        opacity: 0.6;
         cursor: grabbing;
+        > path {
+          opacity: 0.6;
+        }
       }
     }
   }
