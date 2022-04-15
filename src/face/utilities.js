@@ -67,20 +67,19 @@ export class Flip {
     const newState = this.getState(prevState.selector);
 
     const newItems = [];
-    _.forEach(newState.children, (value) => {
+    newState.children.forEach((value) => {
       const $element = value.$element;
-      const newItem = !_.find(prevState.children, { $element });
+      const newItem = !prevState.children.find(item=>item.$element.is($element));
       if (newItem)
         newItems.push($element)
     });
     newItems.forEach(($item) => $item.removeAttr("style"))
 
 
-
     const commonItems = [];
-    _.forEach(newState.children, (value) => {
+    newState.children.forEach((value) => {
       const $element = value.$element;
-      const commonItem = _.find(prevState.children, { $element });
+      const commonItem =prevState.children.find(item=>item.$element.is($element));
       if (commonItem)
         commonItems.push({ $element, prevOffset: commonItem.offset, newOffset: value.offset })
     });
@@ -107,9 +106,9 @@ export class Flip {
 
 
     const oldItems = [];
-    _.forEach(prevState.children, (value) => {
+    prevState.children.forEach((value) => {
       const $element = value.$element;
-      const oldItem = !_.find(newState.children, { $element }) || $element.hasClass("removing");
+      const oldItem = !newState.children.find(item=>item.$element.is($element)) || $element.hasClass("removing");
       if (oldItem)
         oldItems.push({ $element, offset: value.offset });
     });
