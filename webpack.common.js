@@ -37,8 +37,6 @@ module.exports = {
             template: './src/index.html',
             filename: 'index.html',
         }),
-        new MiniCssExtractPlugin({
-            // filename: 'cum.css',
-        }),
+        new MiniCssExtractPlugin(),
     ],
 };
