@@ -1,7 +1,6 @@
 import $ from "jquery";
 import ColorContrastChecker from "color-contrast-checker";
 import { faceForegroundColor, faceBackgroundColor, setFaceBackground, setFaceForeground, getFaceSVG, randomiseFaceParts, setFromHistory, showGrid, hideGrid } from "./face/face";
-import "./scss/style.scss"
 import { colors } from "./face/config";
 
 let contrastChecker = new ColorContrastChecker()
@@ -118,7 +117,15 @@ function updateFavicon() {
   const svg = getFaceSVG("15%")
     .replace(/\"/g, "\'")
     .replace(/\#/g, "%23");
-  $("link#favicon").attr("href", `${prepend}${svg}`)
+
+let toDelete;
+if(toDelete = document.querySelector("link#favicon")) toDelete.remove;
+
+  const linkEl = document.createElement("link");
+  linkEl.setAttribute("rel", "icon");
+  linkEl.setAttribute("href", `${prepend}${svg}`);
+  linkEl.id = "favicon";
+  document.head.appendChild(linkEl)
 }
 
 function exportSVG(svg) {

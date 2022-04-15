@@ -20,7 +20,7 @@ import {
   noseList,
 } from "./parts"
 
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 export const Moods = {
   RANDOM: 0,
@@ -183,7 +183,7 @@ function render() {
 }
 
 async function renderPart(face, partList, shouldFlipY) {
-  let partListCopy = _.cloneDeep(partList);
+  let partListCopy = cloneDeep(partList);
   const i = randomInt(partListCopy.length - 1),
     partData = partListCopy[i]
 

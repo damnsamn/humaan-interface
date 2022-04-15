@@ -1,49 +1,44 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { glob } = require('glob');
-
-const partPaths = glob("")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');;
 
 module.exports = {
-  entry: ['./src/face/face.js', './src/main.js'],
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      inject: 'body',
-      template: './src/index.html',
-      filename: 'index.html',
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.svg$/i,
-        type: 'asset/inline',
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          "style-loader",
-          // Translates CSS into CommonJS
-          "css-loader",
-          // Compiles Sass to CSS
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: false
+    entry: ['./src/main.js', './src/scss/style.scss'],
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true,
+    },
+    module: {
+        rules: [
+            {
+                test: /\.svg$/i,
+                type: 'asset/inline',
             },
-          },
+            {
+                test: /\.(png|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use:
+                [
+                  MiniCssExtractPlugin.loader,
+                  'css-loader',
+                  'sass-loader',
+                ],
+            },
         ],
-      },
-    ]
-  }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            inject: 'body',
+            scriptLoading: 'blocking',
+            template: './src/index.html',
+            filename: 'index.html',
+        }),
+        new MiniCssExtractPlugin({
+            // filename: 'cum.css',
+        }),
+    ],
 };
