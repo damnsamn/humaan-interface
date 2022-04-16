@@ -66,4 +66,3 @@
   $string: "" + $color;
   @return "%23" + string.slice($string, 2,7);
 }
-@debug encode-hex(#000000);

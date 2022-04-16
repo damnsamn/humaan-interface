@@ -92,11 +92,14 @@
 }
 
 .face-history {
-  margin-top: $gutter-size/2;
+  position: absolute;
+  margin-top: calc(50vh + 100% / 2);
+  top: $gutter-size/2;
+  left: 0;
+  right: 0;
   display: flex;
   gap: $gutter-size/2;
   z-index: 1;
-  position: relative;
 
   &__item {
     width: calc((100% - $gutter-size/2 * 4) / 5);

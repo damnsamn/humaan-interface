@@ -1,7 +1,7 @@
 import {
   gridSize,
   colors
-} from "./config"
+} from "./face/config"
 import $ from "jquery"
 
 // Returns a random int between 0 and provided max

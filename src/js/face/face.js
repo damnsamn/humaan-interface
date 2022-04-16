@@ -13,7 +13,7 @@ import {
   randomIntHalf,
   getSvgFromPath,
   Flip
-} from "./utilities"
+} from "../utilities"
 import {
   eyeList,
   mouthList,
