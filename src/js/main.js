@@ -12,7 +12,7 @@ import {
     hideGrid,
 } from './face/face';
 import {colors} from './face/config';
-import {eyeList} from './face/parts';
+import {eyeList, mouthList, noseList} from './face/parts';
 
 let contrastChecker = new ColorContrastChecker();
 
@@ -25,14 +25,14 @@ $(() => {
         let disabledLight = contrastChecker.isLevelCustom(color, '#ffffff', 4.5);
 
         $('#colors-fg').append(
-            `<button class="palette-group__button ${color === faceForegroundColor ? 'active' : ''} ${
+            `<button class="property-group__button property-group__button--color ${color === faceForegroundColor ? 'active' : ''} ${
                 color === faceBackgroundColor ? 'disabled' : ''
             } ${
                 disabledLight ? 'disabled-light' : ''
             }" data-background="${color}" style="background-color: ${color}"></button>`,
         );
         $('#colors-bg').append(
-            `<button class="palette-group__button ${color === faceBackgroundColor ? 'active' : ''} ${
+            `<button class="property-group__button property-group__button--color ${color === faceBackgroundColor ? 'active' : ''} ${
                 color === faceForegroundColor ? 'disabled' : ''
             } ${
                 disabledLight ? 'disabled-light' : ''
@@ -40,7 +40,20 @@ $(() => {
         );
     });
 
-    $('.palette-group__button').on('click', function () {
+    noseList.forEach((nose) => {
+        $('.property-group#parts-nose').append(createPartButton(nose));
+    });
+
+    eyeList.forEach((eye) => {
+        $('.property-group#parts-eye-1').append(createPartButton(eye));
+        $('.property-group#parts-eye-2').append(createPartButton(eye));
+    });
+
+    mouthList.forEach((mouth) => {
+        $('.property-group#parts-mouth').append(createPartButton(mouth));
+    });
+
+    $('.property-group__button--color').on('click', function () {
         const fg = $(this).data('foreground');
         const bg = $(this).data('background');
 
@@ -53,10 +66,10 @@ $(() => {
             foregroundColor(fg);
         }
         if (bg) {
-          if (bg === faceBackgroundColor) {
-            setFaceBackground(faceForegroundColor);
-            foregroundColor(faceForegroundColor);
-          }
+            if (bg === faceBackgroundColor) {
+                setFaceBackground(faceForegroundColor);
+                foregroundColor(faceForegroundColor);
+            }
             setFaceForeground(bg);
             backgroundColor(bg);
         }
@@ -113,6 +126,8 @@ function backgroundColor(color = null) {
 
 function setCSSCustomProperties() {
     document.body.style.setProperty('--background', faceForegroundColor);
+    document.body.style.setProperty('--face-foreground', faceForegroundColor);
+    document.body.style.setProperty('--face-background', faceBackgroundColor);
 
     if (contrastChecker.isLevelCustom(faceForegroundColor, faceBackgroundColor, 2)) {
         document.body.style.setProperty('--foreground', faceBackgroundColor);
@@ -167,4 +182,14 @@ function exportSVG(svg) {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
+
+function createPartButton(partData) {
+    const $button = document.createElement('button');
+    const svgBase64 = partData.path.match(/data:.+?,(.*)/)[1];
+    const svg = atob(svgBase64).trim();
+    $button.classList.add("property-group__button", "property-group__button--part")
+    $button.dataset.part = partData.name;
+    $button.innerHTML = svg;
+    return $($button);
 }

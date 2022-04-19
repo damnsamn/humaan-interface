@@ -38,31 +38,37 @@ import Mouth07 from "./svg/mouth/07.svg"
 
 export const eyeList = [
   {
+    name: "Eye01",
     path: Eye01,
     width: 2,
     height: 2,
   },
   {
+    name: "Eye02",
     path: Eye02,
     width: 4,
     height: 2,
   },
   {
+    name: "Eye03",
     path: Eye03,
     width: 3,
     height: 5,
   },
   {
+    name: "Eye04",
     path: Eye04,
     width: 4,
     height: 6,
   },
   {
+    name: "Eye05",
     path: Eye05,
     width: 4,
     height: 4,
   },
   {
+    name: "Eye06",
     path: Eye06,
     width: 4,
     height: 4,
@@ -71,6 +77,7 @@ export const eyeList = [
 
 export const noseList = [
   {
+    name: "Nose01",
     path: Nose01,
     width: 7,
     height: 6,
@@ -94,6 +101,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose02",
     path: Nose02,
     width: 5,
     height: 6,
@@ -117,6 +125,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose03",
     path: Nose03,
     width: 4,
     height: 2,
@@ -140,6 +149,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose04",
     path: Nose04,
     width: 4,
     height: 4,
@@ -163,6 +173,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose05",
     path: Nose05,
     width: 5,
     height: 3,
@@ -186,6 +197,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose06",
     path: Nose06,
     width: 5,
     height: 5,
@@ -209,6 +221,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose07",
     path: Nose07,
     width: 2,
     height: 2,
@@ -232,6 +245,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose08",
     path: Nose08,
     width: 4,
     height: 7,
@@ -255,6 +269,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose09",
     path: Nose09,
     width: 4,
     height: 4,
@@ -278,6 +293,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose10",
     path: Nose10,
     width: 8,
     height: 4,
@@ -301,6 +317,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose11",
     path: Nose11,
     width: 4,
     height: 7,
@@ -324,6 +341,7 @@ export const noseList = [
     ],
   },
   {
+    name: "Nose12",
     path: Nose12,
     width: 3,
     height: 3,
@@ -347,6 +365,7 @@ export const noseList = [
     ],
   },
   {
+    name: "NoseEye01",
     path: NoseEye01,
     width: 7,
     height: 6,
@@ -364,6 +383,7 @@ export const noseList = [
     ],
   },
   {
+    name: "NoseEye02",
     path: NoseEye02,
     width: 7,
     height: 6,
@@ -381,6 +401,7 @@ export const noseList = [
     ],
   },
   {
+    name: "NoseEye03",
     path: NoseEye03,
     width: 7,
     height: 6,
@@ -398,6 +419,7 @@ export const noseList = [
     ],
   },
   {
+    name: "NoseEye04",
     path: NoseEye04,
     width: 7,
     height: 6,
@@ -415,6 +437,7 @@ export const noseList = [
     ],
   },
   {
+    name: "NoseEye05",
     path: NoseEye05,
     width: 4,
     height: 7,
@@ -436,6 +459,7 @@ export const noseList = [
 
 export const mouthList = [
   {
+    name: "Mouth01",
     path: Mouth01,
     width: 5,
     height: 5,
@@ -445,6 +469,7 @@ export const mouthList = [
     boundH: 5,
   },
   {
+    name: "Mouth02",
     path: Mouth02,
     width: 7,
     height: 3,
@@ -454,6 +479,7 @@ export const mouthList = [
     boundH: 3,
   },
   {
+    name: "Mouth03",
     path: Mouth03,
     width: 10,
     height: 5,
@@ -478,6 +504,7 @@ export const mouthList = [
     ],
   },
   {
+    name: "Mouth04",
     path: Mouth04,
     width: 2,
     height: 2,
@@ -487,6 +514,7 @@ export const mouthList = [
     boundH: 2,
   },
   {
+    name: "Mouth05",
     path: Mouth05,
     width: 5,
     height: 5,
@@ -496,6 +524,7 @@ export const mouthList = [
     boundH: 5,
   },
   {
+    name: "Mouth06",
     path: Mouth06,
     width: 5,
     height: 1,
@@ -505,6 +534,7 @@ export const mouthList = [
     boundH: 2,
   },
   {
+    name: "Mouth07",
     path: Mouth07,
     width: 4,
     height: 2,

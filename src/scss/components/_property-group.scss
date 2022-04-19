@@ -1,25 +1,47 @@
 @use "sass:color";
 
-.palette-group {
+.property-group {
   display: flex;
   flex-wrap: wrap;
   gap: $gutter-size/2;
+
   &__button {
     border: none;
-    height: 3rem;
     border-radius: $border-radius--regular;
     box-shadow: 0 0.125rem 5px rgba(0, 0, 0, 0.25);
-    width: calc((100% - $gutter-size/2 * 3) / 4);
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    // border: 2px solid #fff;
+
+    &--color {
+      height: 3rem;
+      width: calc((100% - $gutter-size/2 * 3) / 4);
+    }
+
+    &--part {
+      aspect-ratio: 1/1;
+      width: calc((100% - $gutter-size/2 * 4) / 5);
+      background-color: var(--face-background);
+      transition: background-color $transition--short;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        transform: scale(0.2);
+        flex: none;
+        path {
+          fill: var(--face-foreground);
+          transition: fill $transition--short;
+        }
+      }
+    }
 
     &.disabled {
       box-shadow: none;
 
       @function disabled-svg($color) {
-        @return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">><path d="M6,0C2.69,0,0,2.69,0,6s2.69,6,6,6,6-2.69,6-6S9.31,0,6,0Zm0,2c.74,0,1.42,.22,2.02,.57L2.57,8.02c-.35-.59-.57-1.28-.57-2.02,0-2.21,1.79-4,4-4Zm0,8c-.74,0-1.42-.22-2.02-.57L9.43,3.98c.35,.59,.57,1.28,.57,2.02,0,2.21-1.79,4-4,4Z" fill="#{$color}"/></svg>'
+        @return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">><path d="M6,0C2.69,0,0,2.69,0,6s2.69,6,6,6,6-2.69,6-6S9.31,0,6,0Zm0,2c.74,0,1.42,.22,2.02,.57L2.57,8.02c-.35-.59-.57-1.28-.57-2.02,0-2.21,1.79-4,4-4Zm0,8c-.74,0-1.42-.22-2.02-.57L9.43,3.98c.35,.59,.57,1.28,.57,2.02,0,2.21-1.79,4-4,4Z" fill="#{$color}"/></svg>';
       }
       &::before {
         content: "";
@@ -58,7 +80,7 @@
     &.active {
       border: none;
       @function active-svg($color) {
-        @return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M-102.69,548.12a6,6,0,0,0-6,6,6,6,0,0,0,6,6,6,6,0,0,0,6-6A6,6,0,0,0-102.69,548.12Zm-.9,9.15-2.65-2.65,1.06-1.06,1.59,1.59,3.61-3.62,1.06,1.06Z" transform="translate(108.69 -548.12)" fill="#{$color}"/></svg>'
+        @return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M-102.69,548.12a6,6,0,0,0-6,6,6,6,0,0,0,6,6,6,6,0,0,0,6-6A6,6,0,0,0-102.69,548.12Zm-.9,9.15-2.65-2.65,1.06-1.06,1.59,1.59,3.61-3.62,1.06,1.06Z" transform="translate(108.69 -548.12)" fill="#{$color}"/></svg>';
       }
 
       &::after {

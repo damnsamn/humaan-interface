@@ -206,7 +206,8 @@ async function renderPart(face, partList, shouldFlipY) {
         .nested()
         .svg(value)
         .move(grid(partData.boundX), grid(partData.boundY))
-        .size(grid(partData.width), grid(partData.height));
+        .size(grid(partData.width), grid(partData.height))
+        .id(partData.name);
 
     // Flip part
     flipX && part.children().children().flip("x")
@@ -292,7 +293,8 @@ async function drawEyes(face) {
         face.nested()
           .svg(value)
           .size(grid(eyeData.width), grid(eyeData.height))
-          .move(grid(slotX), grid(slotY));
+          .move(grid(slotX), grid(slotY))
+          .id(eyeData.name);
 
 
       // Flip part
