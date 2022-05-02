@@ -1,0 +1,15 @@
+.viewport {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: $gutter-size * 2;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        gap: $gutter-size * 2;
+        min-height: 100%;
+    }
+}

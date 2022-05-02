@@ -1,0 +1,8 @@
+.sidebar {
+    width: 500px;
+    padding: $gutter-size;
+    background-color: $color--dark;
+    color: $color--light;
+
+    box-shadow: inner -5px 0 10px rgba($color__background, 0.5)
+}

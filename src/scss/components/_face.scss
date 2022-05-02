@@ -38,14 +38,10 @@
 }
 
 .face-container {
-  position: sticky;
-  top: 0;
-  @include breakpoint(lg) {
-    min-height: 100vh;
-  }
-  // display: flex;
+  display: flex;
   flex-direction: column;
-  // justify-content: center;
+  gap: $gutter-size;
+  margin: auto 0;
 }
 
 .face {
@@ -92,11 +88,7 @@
 }
 
 .face-history {
-  position: absolute;
-  margin-top: calc(50vh + 100% / 2);
-  top: $gutter-size/2;
-  left: 0;
-  right: 0;
+  position: relative;
   display: flex;
   gap: $gutter-size/2;
   z-index: 1;

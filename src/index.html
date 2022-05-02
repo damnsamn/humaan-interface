@@ -10,82 +10,73 @@
   </head>
 
   <body>
-    <header class="header">
-      <!-- <h1>Humaaaan</h1> -->
-    </header>
-    <main class="main">
+    <nav class="sidebar">
+      <h1>Humaan Interface</h1>
+
+      <div class="field-group">
+        <span class="field-group__label">Background Colour</span>
+        <div class="property-group" id="colors-bg"></div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-group__label">Foreground Colour</span>
+        <div class="property-group" id="colors-fg"></div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-group__label">Nose</span>
+        <div class="property-group" id="parts-nose"></div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-group__label">Eye 1</span>
+        <div class="property-group" id="parts-eye-1"></div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-group__label">Eye 2</span>
+        <div class="property-group" id="parts-eye-2"></div>
+      </div>
+
+      <div class="field-group">
+        <span class="field-group__label">Mouth</span>
+        <div class="property-group" id="parts-mouth"></div>
+      </div>
+    </nav>
+    <main class="viewport">
       <div class="container">
-        <div class="row">
 
-          <div class="col-12 col-lg-6">
-            <div class="face-container center-to-square">
-              <div class="face" id="face"></div>
-              <div class="face-history" id="face-history"></div>
-            </div>
-          </div>
+        <div>Humaan Logo</div>
 
-          <div class="col-12 col-lg-6">
-            <div class="face-controls center-to-square">
-
-              <h1>Humaan Interface</h1>
-
-              <div class="field-group">
-                <span class="field-group__label">Background Colour</span>
-                <div class="property-group" id="colors-bg"></div>
-              </div>
-
-              <div class="field-group">
-                <span class="field-group__label">Foreground Colour</span>
-                <div class="property-group" id="colors-fg"></div>
-              </div>
-
-              <div class="field-group">
-                <span class="field-group__label">Nose</span>
-                <div class="property-group" id="parts-nose"></div>
-              </div>
-
-              <div class="field-group">
-                <span class="field-group__label">Eye 1</span>
-                <div class="property-group" id="parts-eye-1"></div>
-              </div>
-
-              <div class="field-group">
-                <span class="field-group__label">Eye 2</span>
-                <div class="property-group" id="parts-eye-2"></div>
-              </div>
-
-              <div class="field-group">
-                <span class="field-group__label">Mouth</span>
-                <div class="property-group" id="parts-mouth"></div>
-              </div>
-
-              <div class="field-group">
-                <div class="button-group">
-                  <button class="button" id="randomise">
-                    <i>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19.22 13.5">
-                        <path d="M19.22,7.46,18.16,8.52l-1.81-1.8v0a6.91,6.91,0,0,1-.25,1.83,6.75,6.75,0,0,1-11.68,2.5L5.49,10A5.23,5.23,0,0,0,14,9.53a5.11,5.11,0,0,0,.81-2.78V6.61L12.93,8.52,11.87,7.46l3.67-3.67.22.22Z" />
-                        <path d="M4.73,8.66,3.67,9.71,0,6,1.06,5,2.85,6.77v0a6.6,6.6,0,0,1,.26-1.84A6.75,6.75,0,0,1,14.79,2.43L13.72,3.5A5.24,5.24,0,0,0,5.14,4a5.17,5.17,0,0,0-.79,2.75.76.76,0,0,0,0,.15L6.29,5,7.35,6Z" />
-                      </svg>
-                    </i>
-                    <span>Randomise</span>
-                  </button>
-                  <button class="button" id="export">
-                    <i>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 13.33 13.24">
-                        <polygon points="11.83 9.65 11.83 11.74 1.5 11.74 1.5 9.65 0 9.65 0 13.24 13.33 13.24 13.33 9.65 11.83 9.65" />
-                        <polygon points="11.65 5.02 10.59 3.96 7.42 7.13 7.42 0 5.92 0 5.92 7.13 2.75 3.96 1.69 5.02 6.67 10 11.65 5.02" />
-                      </svg>
-                    </i>
-                    <span>Export SVG</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
+        <div class="face-container">
+          <div class="face" id="face"></div>
+          <div class="face-history" id="face-history"></div>
         </div>
+
+        <div class="button-group">
+          <button class="button" id="randomise">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19.22 13.5">
+                <path d="M19.22,7.46,18.16,8.52l-1.81-1.8v0a6.91,6.91,0,0,1-.25,1.83,6.75,6.75,0,0,1-11.68,2.5L5.49,10A5.23,5.23,0,0,0,14,9.53a5.11,5.11,0,0,0,.81-2.78V6.61L12.93,8.52,11.87,7.46l3.67-3.67.22.22Z" />
+                <path d="M4.73,8.66,3.67,9.71,0,6,1.06,5,2.85,6.77v0a6.6,6.6,0,0,1,.26-1.84A6.75,6.75,0,0,1,14.79,2.43L13.72,3.5A5.24,5.24,0,0,0,5.14,4a5.17,5.17,0,0,0-.79,2.75.76.76,0,0,0,0,.15L6.29,5,7.35,6Z" />
+              </svg>
+            </i>
+            <span>Randomise</span>
+          </button>
+          <button class="button" id="export">
+            <i>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 13.33 13.24">
+                <polygon points="11.83 9.65 11.83 11.74 1.5 11.74 1.5 9.65 0 9.65 0 13.24 13.33 13.24 13.33 9.65 11.83 9.65" />
+                <polygon points="11.65 5.02 10.59 3.96 7.42 7.13 7.42 0 5.92 0 5.92 7.13 2.75 3.96 1.69 5.02 6.67 10 11.65 5.02" />
+              </svg>
+            </i>
+            <span>Export SVG</span>
+          </button>
+        </div>
+      </div>
+
+
+      </div>
       </div>
     </main>
   </body>

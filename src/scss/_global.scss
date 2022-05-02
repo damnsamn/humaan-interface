@@ -7,18 +7,17 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   margin: 0;
-  color: $color__foreground;
   background: $color__background;
   &.colours-applied {
     transition: background $transition--short;
   }
+}
 
-  &.text-dark {
-    color: $color--dark;
-  }
-  &.text-light {
-    color: $color--light;
-  }
+.viewport {
+  color: $color__foreground;
+}
+.sidebar {
+  color: $color--light;
 }
 
 @for $n from 1 through 6 {
