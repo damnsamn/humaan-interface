@@ -162,8 +162,8 @@ function updateFavicon() {
     const prepend = 'data:image/svg+xml;utf8,';
     const svg = getFaceSVG('15%').replace(/\"/g, "'").replace(/\#/g, '%23');
 
-    let toDelete;
-    if ((toDelete = document.querySelector('link#favicon'))) toDelete.remove;
+    let toDelete = document.querySelector('link#favicon')
+    if (toDelete) toDelete.remove();
 
     const linkEl = document.createElement('link');
     linkEl.setAttribute('rel', 'icon');
