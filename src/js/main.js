@@ -48,26 +48,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const allColorButtons = document.querySelectorAll('.property-group__button--color');
     allColorButtons.forEach((button) =>
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (e) => {
             const fg = button.dataset.foreground;
             const bg = button.dataset.background;
 
-            if (fg) {
-                if (fg === faceForegroundColor) {
-                    setFaceForeground(faceBackgroundColor);
-                    updateBackgroundButtons(faceBackgroundColor);
-                }
-                setFaceBackground(fg);
-                updateForegroundButtons(fg);
-            }
-            if (bg) {
-                if (bg === faceBackgroundColor) {
+            if (fg && fg !== faceForegroundColor) {
+                if (fg === faceBackgroundColor) {
                     setFaceBackground(faceForegroundColor);
-                    updateForegroundButtons(faceForegroundColor);
+                    setFaceForeground(fg);
+                    updateForegroundButtons(fg);
+                    updateBackgroundButtons(faceBackgroundColor);
+                } else {
+                    setFaceForeground(fg);
+                    updateForegroundButtons(fg);
                 }
-                setFaceForeground(bg);
-                updateBackgroundButtons(bg);
             }
+
+            if (bg && bg !== faceBackgroundColor) {
+                if (bg === faceForegroundColor) {
+                    setFaceForeground(faceBackgroundColor);
+                    setFaceBackground(bg);
+                    updateBackgroundButtons(bg);
+                    updateForegroundButtons(faceForegroundColor);
+                } else {
+                    setFaceBackground(bg);
+                    updateBackgroundButtons(bg);
+                }
+            }
+
+            // if (fg && fg !== faceForegroundColor) {
+            //     if (fg === faceBackgroundColor) {
+            //         setFaceForeground(faceBackgroundColor);
+            //         updateBackgroundButtons(faceBackgroundColor);
+            //     }
+            //     setFaceBackground(fg);
+            //     updateForegroundButtons(fg);
+            // }
+            // if (bg && bg !== faceBackgroundColor) {
+            //     console.log({bg, faceForegroundColor, faceBackgroundColor})
+            //     if (bg === faceForegroundColor) {
+            //         setFaceBackground(faceForegroundColor);
+            //         updateForegroundButtons(faceForegroundColor);
+            //     }
+            //     setFaceForeground(bg);
+            //     updateBackgroundButtons(bg);
+            // }
 
             updateCSSColors();
             updateFavicon();
@@ -94,10 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const exportButton = document.querySelector("#export");
-    exportButton.addEventListener("click", ()=>{
+    const exportButton = document.querySelector('#export');
+    exportButton.addEventListener('click', () => {
         exportSVG(getFaceSVG());
-    })
+    });
 
     document.addEventListener('svgUpdated', function () {
         updateFavicon();
