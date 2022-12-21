@@ -3,7 +3,7 @@
 .property-group {
   display: flex;
   flex-wrap: wrap;
-  gap: $gutter-size/2;
+  gap: $gutter-size * 0.5;
 
   &__button {
     border: none;
@@ -15,12 +15,12 @@
 
     &--color {
       height: 3rem;
-      width: calc((100% - $gutter-size/2 * 3) / 4);
+      width: calc((100% - $gutter-size * 0.5 * 3) / 4);
     }
 
     &--part {
       aspect-ratio: 1/1;
-      width: calc((100% - $gutter-size/2 * 4) / 5);
+      width: calc((100% - $gutter-size * 0.5 * 4) / 5);
       background-color: var(--face-background);
       transition: background-color $transition--short;
       display: flex;

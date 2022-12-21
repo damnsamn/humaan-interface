@@ -1,6 +1,6 @@
 .button-group {
   display: flex;
-  gap: $gutter-size/2;
+  gap: $gutter-size * 0.5;
   > .button {
     flex: 1 1 auto;
   }

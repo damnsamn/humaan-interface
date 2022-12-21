@@ -1,3 +1,4 @@
+
 body {
   display: flex;
 }
@@ -9,8 +10,8 @@ body {
 }
 
 .container {
-  padding-left: $gutter-size/2;
-  padding-right: $gutter-size/2;
+  padding-left: $gutter-size * 0.5;
+  padding-right: $gutter-size * 0.5;
   margin-left: auto;
   margin-right: auto;
 
@@ -35,8 +36,8 @@ body {
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-left: -$gutter-size/2;
-  margin-right: -$gutter-size/2;
+  margin-left: -$gutter-size * 0.5;
+  margin-right: -$gutter-size * 0.5;
 }
 
 .col {

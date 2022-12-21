@@ -1,6 +1,7 @@
 @use "sass:map";
 @use "sass:color";
 @use "sass:string";
+@use "sass:math";
 
 @mixin breakpoint($bp-name) {
   @media (min-width: map.get($grid-breakpoints, $bp-name)) {
@@ -10,13 +11,13 @@
 
 @mixin col($n: null) {
   @if ($n == null) {
-    padding-left: $gutter-size/2;
-    padding-right: $gutter-size/2;
+    padding-left: $gutter-size * 0.5;
+    padding-right: $gutter-size * 0.5;
     flex: 0 0 auto;
   } @else {
-    $width: (100% * $n/$columns);
-    padding-left: $gutter-size/2;
-    padding-right: $gutter-size/2;
+    $width: (100% * math.div($n, $columns));
+    padding-left: $gutter-size * 0.5;
+    padding-right: $gutter-size * 0.5;
     flex: 0 0 $width;
     width: $width;
   }
@@ -30,7 +31,7 @@
 }
 
 @mixin offset($n) {
-  margin-left: (100% * $n/$columns);
+  margin-left: (100% * math.div($n, $columns));
 }
 
 @mixin responsive-classes() {
@@ -64,5 +65,5 @@
 
 @function encode-hex($color) {
   $string: "" + $color;
-  @return "%23" + string.slice($string, 2,7);
+  @return "%23" + string.slice($string, 2, 7);
 }

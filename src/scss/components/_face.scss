@@ -90,11 +90,11 @@
 .face-history {
   position: relative;
   display: flex;
-  gap: $gutter-size/2;
+  gap: $gutter-size * 0.5;
   z-index: 1;
 
   &__item {
-    width: calc((100% - $gutter-size/2 * 4) / 5);
+    width: calc((100% - $gutter-size * 0.5 * 4) / 5);
     display: flex;
     // overflow: hidden;
     transition: transform 0.15s ease-in-out, opacity 0.15s ease-in-out;
