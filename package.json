@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "webpack serve --config webpack.dev.js",
     "serve:prod": "webpack serve --config webpack.prod.js",
     "build": "webpack --config webpack.prod.js",
@@ -28,6 +27,7 @@
     "@svgdotjs/svg.js": "^3.1.1",
     "color-contrast-checker": "^2.1.0",
     "gh-pages": "^3.2.3",
+    "gsap": "^3.11.3",
     "jquery": "^3.6.0",
     "jquery-color": "^2.2.0"
   }

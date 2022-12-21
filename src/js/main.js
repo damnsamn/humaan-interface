@@ -16,115 +16,119 @@ import {eyeList, mouthList, noseList} from './face/parts';
 
 let contrastChecker = new ColorContrastChecker();
 
-$(() => {
-    setCSSCustomProperties();
-    $('body').addClass('colours-applied');
+document.addEventListener('DOMContentLoaded', () => {
+    updateCSSColors();
+
+    document.body.classList.toggle('colours-applied');
+
+    const foregroundButtons = document.querySelector('#colors-fg');
+    const backgroundButtons = document.querySelector('#colors-bg');
 
     colors.forEach((color) => {
-        // If colour is dark, set its disabled colour to be light
-        let disabledLight = contrastChecker.isLevelCustom(color, '#ffffff', 4.5);
-
-        $('#colors-fg').append(
-            `<button class="property-group__button property-group__button--color ${color === faceForegroundColor ? 'active' : ''} ${
-                color === faceBackgroundColor ? 'disabled' : ''
-            } ${
-                disabledLight ? 'disabled-light' : ''
-            }" data-background="${color}" style="background-color: ${color}"></button>`,
-        );
-        $('#colors-bg').append(
-            `<button class="property-group__button property-group__button--color ${color === faceBackgroundColor ? 'active' : ''} ${
-                color === faceForegroundColor ? 'disabled' : ''
-            } ${
-                disabledLight ? 'disabled-light' : ''
-            }" data-foreground="${color}" style="background-color: ${color}"></button>`,
-        );
+        foregroundButtons.appendChild(createColorButton(color, true));
+        backgroundButtons.appendChild(createColorButton(color, false));
     });
 
+    const noseButtons = document.querySelector('#parts-nose');
     noseList.forEach((nose) => {
-        $('.property-group#parts-nose').append(createPartButton(nose));
+        noseButtons.appendChild(createPartButton(nose));
     });
 
+    const eye1Buttons = document.querySelector('#parts-eye-1');
+    const eye2Buttons = document.querySelector('#parts-eye-2');
     eyeList.forEach((eye) => {
-        $('.property-group#parts-eye-1').append(createPartButton(eye));
-        $('.property-group#parts-eye-2').append(createPartButton(eye));
+        eye1Buttons.appendChild(createPartButton(eye));
+        eye2Buttons.appendChild(createPartButton(eye));
     });
 
+    const mouthButtons = document.querySelector('#parts-mouth');
     mouthList.forEach((mouth) => {
-        $('.property-group#parts-mouth').append(createPartButton(mouth));
+        mouthButtons.appendChild(createPartButton(mouth));
     });
 
-    $('.property-group__button--color').on('click', function () {
-        const fg = $(this).data('foreground');
-        const bg = $(this).data('background');
+    const allColorButtons = document.querySelectorAll('.property-group__button--color');
+    allColorButtons.forEach((button) =>
+        button.addEventListener('click', () => {
+            const fg = button.dataset.foreground;
+            const bg = button.dataset.background;
 
-        if (fg) {
-            if (fg === faceForegroundColor) {
-                setFaceForeground(faceBackgroundColor);
-                backgroundColor(faceBackgroundColor);
+            if (fg) {
+                if (fg === faceForegroundColor) {
+                    setFaceForeground(faceBackgroundColor);
+                    updateBackgroundButtons(faceBackgroundColor);
+                }
+                setFaceBackground(fg);
+                updateForegroundButtons(fg);
             }
-            setFaceBackground(fg);
-            foregroundColor(fg);
-        }
-        if (bg) {
-            if (bg === faceBackgroundColor) {
-                setFaceBackground(faceForegroundColor);
-                foregroundColor(faceForegroundColor);
+            if (bg) {
+                if (bg === faceBackgroundColor) {
+                    setFaceBackground(faceForegroundColor);
+                    updateForegroundButtons(faceForegroundColor);
+                }
+                setFaceForeground(bg);
+                updateBackgroundButtons(bg);
             }
-            setFaceForeground(bg);
-            backgroundColor(bg);
-        }
 
-        setCSSCustomProperties();
-        updateFavicon();
-    });
+            updateCSSColors();
+            updateFavicon();
+        }),
+    );
 
-    $('#randomise').on('click', function (e) {
+    const randomiseButton = document.querySelector('#randomise');
+    randomiseButton.addEventListener('click', () => {
         randomiseFaceParts();
         faceJiggle();
     });
 
-    $('.face-history').on('click', '.face-history__item>svg', function () {
-        setFromHistory(this.id);
+    const faceHistory = document.querySelector('.face-history');
+    faceHistory.addEventListener('click', (e) => {
+        const historyButton = e.target.closest('.face-history__item > svg');
 
-        setCSSCustomProperties();
-        foregroundColor(faceBackgroundColor.toUpperCase());
-        backgroundColor(faceForegroundColor.toUpperCase());
-        faceJump();
+        if (historyButton) {
+            setFromHistory(historyButton.id);
+
+            updateCSSColors();
+            updateForegroundButtons(faceBackgroundColor.toUpperCase());
+            updateBackgroundButtons(faceForegroundColor.toUpperCase());
+            faceJump();
+        }
     });
 
-    $('#export').on('click', function () {
+    const exportButton = document.querySelector("#export");
+    exportButton.addEventListener("click", ()=>{
         exportSVG(getFaceSVG());
-    });
-    $(document).on('svgUpdated', function () {
+    })
+
+    document.addEventListener('svgUpdated', function () {
         updateFavicon();
     });
 });
 
-function foregroundColor(color = null) {
-    // set
-    if (color) {
-        $('[data-background').removeClass('disabled');
-        $(`[data-background="${color}"]`).addClass('disabled');
-        $('[data-foreground]').removeClass('active');
-        $(`[data-foreground="${color}"]`).addClass('active');
-    }
-    // get
-    else return document.body.style.getPropertyValue('--foreground');
+function updateForegroundButtons(color) {
+    const foregroundButtons = document.querySelectorAll('.property-group__button--color[data-foreground]');
+    const backgroundButtons = document.querySelectorAll('.property-group__button--color[data-background]');
+
+    foregroundButtons.forEach((button) => {
+        button.classList.toggle('active', color === button.dataset.foreground);
+    });
+    backgroundButtons.forEach((button) => {
+        button.classList.toggle('disabled', color === button.dataset.background);
+    });
 }
 
-function backgroundColor(color = null) {
-    // set
-    if (color) {
-        $('[data-foreground').removeClass('disabled');
-        $(`[data-foreground="${color}"]`).addClass('disabled');
-        $('[data-background]').removeClass('active');
-        $(`[data-background="${color}"]`).addClass('active');
-    }
-    // get
-    else return document.body.style.getPropertyValue('--background');
+function updateBackgroundButtons(color) {
+    const foregroundButtons = document.querySelectorAll('.property-group__button--color[data-foreground]');
+    const backgroundButtons = document.querySelectorAll('.property-group__button--color[data-background]');
+
+    foregroundButtons.forEach((button) => {
+        button.classList.toggle('disabled', color === button.dataset.foreground);
+    });
+    backgroundButtons.forEach((button) => {
+        button.classList.toggle('active', color === button.dataset.background);
+    });
 }
 
-function setCSSCustomProperties() {
+function updateCSSColors() {
     document.body.style.setProperty('--background', faceForegroundColor);
     document.body.style.setProperty('--face-foreground', faceForegroundColor);
     document.body.style.setProperty('--face-background', faceBackgroundColor);
@@ -146,15 +150,18 @@ function setCSSCustomProperties() {
 }
 
 function faceJiggle() {
-    $('.face').removeClass('jiggle').removeClass('jump');
+    const face = document.querySelector('.face');
+    face.classList.remove('jiggle', 'jump');
     setTimeout(function () {
-        $('.face').addClass('jiggle');
+        face.classList.add('jiggle');
     }, 0);
 }
+
 function faceJump() {
-    $('.face').removeClass('jiggle').removeClass('jump');
+    const face = document.querySelector('.face');
+    face.classList.remove('jiggle', 'jump');
     setTimeout(function () {
-        $('.face').addClass('jump');
+        face.classList.add('jump');
     }, 0);
 }
 
@@ -162,7 +169,7 @@ function updateFavicon() {
     const prepend = 'data:image/svg+xml;utf8,';
     const svg = getFaceSVG('15%').replace(/\"/g, "'").replace(/\#/g, '%23');
 
-    let toDelete = document.querySelector('link#favicon')
+    let toDelete = document.querySelector('link#favicon');
     if (toDelete) toDelete.remove();
 
     const linkEl = document.createElement('link');
@@ -184,12 +191,29 @@ function exportSVG(svg) {
     document.body.removeChild(downloadLink);
 }
 
+function createColorButton(color, isForeground) {
+    const plane = isForeground ? 'foreground' : 'background';
+
+    // If colour is dark, set its disabled colour to be light
+    let disabledLight = contrastChecker.isLevelCustom(color, '#ffffff', 4.5);
+
+    const $button = document.createElement('button');
+    $button.classList.add('property-group__button', 'property-group__button--color');
+    $button.classList.toggle('active', color === (isForeground ? faceForegroundColor : faceBackgroundColor));
+    $button.classList.toggle('disabled', color === (isForeground ? faceBackgroundColor : faceForegroundColor));
+    $button.classList.toggle('disabled-light', disabledLight);
+    $button.dataset[plane] = color;
+    $button.style.backgroundColor = color;
+
+    return $button;
+}
+
 function createPartButton(partData) {
     const $button = document.createElement('button');
     const svgBase64 = partData.path.match(/data:.+?,(.*)/)[1];
     const svg = atob(svgBase64).trim();
-    $button.classList.add("property-group__button", "property-group__button--part")
+    $button.classList.add('property-group__button', 'property-group__button--part');
     $button.dataset.part = partData.name;
     $button.innerHTML = svg;
-    return $($button);
+    return $button;
 }

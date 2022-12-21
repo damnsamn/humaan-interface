@@ -16,13 +16,15 @@ let changedColors = [...colors];
 export const chooseRandomColor = () => changedColors.splice(randomInt(changedColors.length - 1), 1)[0]
 
 export async function getSvgFromPath(path) {
-  let svg;
-  await $.get(path, (contents) => {
-    let $el = $('svg', contents);
-    $el.removeAttr("fill").removeAttr("width").removeAttr("height").children().removeAttr("fill")
-    svg = $el.prop("outerHTML")
-  }, 'xml');
-  return svg;
+  const svgString = atob(path.split(",").pop());
+  const parser = new DOMParser();
+  const svgDoc = parser.parseFromString(svgString, "image/svg+xml")
+  const svg = svgDoc.firstChild;
+
+  svg.removeAttribute('width');
+  svg.removeAttribute('height');
+  Array.from(svg.children).forEach(child=>child.removeAttribute("fill"));
+  return svg.outerHTML;
 }
 export class Flip {
   static transition = 250;
@@ -30,7 +32,7 @@ export class Flip {
 
   static getState(selector) {
     const stateArray = [];
-    const $children = $(selector).children();
+    const $children = $(document.querySelector(selector).children);
     let stylesToReset = [];
 
     stylesToReset = $children.map((index, el) => {
@@ -40,6 +42,7 @@ export class Flip {
         margin: $(el).css("margin"),
       };
     });
+
     $children.not(".removing").css({
       "position": "static",
       "transform": "none",
