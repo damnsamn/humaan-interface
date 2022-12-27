@@ -16,9 +16,8 @@ let changedColors = [...colors];
 export const chooseRandomColor = () => changedColors.splice(randomInt(changedColors.length - 1), 1)[0]
 
 export async function getSvgFromPath(path) {
-  const svgString = atob(path.split(",").pop());
   const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svgString, "image/svg+xml")
+  const svgDoc = parser.parseFromString(path, "image/svg+xml")
   const svg = svgDoc.firstChild;
 
   svg.removeAttribute('width');
@@ -26,6 +25,7 @@ export async function getSvgFromPath(path) {
   Array.from(svg.children).forEach(child=>child.removeAttribute("fill"));
   return svg.outerHTML;
 }
+
 export class Flip {
   static transition = 250;
   static count = 0;

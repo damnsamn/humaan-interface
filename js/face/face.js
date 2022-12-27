@@ -166,6 +166,7 @@ async function renderPart(face, partList, shouldFlipY) {
     const i = randomInt(partListCopy.length - 1),
         partData = partListCopy[i];
 
+        console.log({partData})
     await getSvgFromPath(partData.path).then((value) => {
         const flipX = randomInt(1),
             flipY = mood === Moods.RANDOM ? randomInt(1) : mood === Moods.HAPPY ? 0 : mood === Moods.HAPPY ? 1 : false;

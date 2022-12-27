@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import "/scss/style.scss";
 import ColorContrastChecker from 'color-contrast-checker';
 import {
     faceForegroundColor,
@@ -16,8 +17,9 @@ import {eyeList, mouthList, noseList} from './face/parts';
 
 let contrastChecker = new ColorContrastChecker();
 
+updateCSSColors();
+debugger;
 document.addEventListener('DOMContentLoaded', () => {
-    updateCSSColors();
 
     document.body.classList.toggle('colours-applied');
 
@@ -235,10 +237,10 @@ function createColorButton(color, isForeground) {
 
 function createPartButton(partData) {
     const $button = document.createElement('button');
-    const svgBase64 = partData.path.match(/data:.+?,(.*)/)[1];
-    const svg = atob(svgBase64).trim();
+    // const svgBase64 = partData.path.match(/data:.+?,(.*)/)[1];
+    // const svg = atob(svgBase64).trim();
     $button.classList.add('property-group__button', 'property-group__button--part');
     $button.dataset.part = partData.name;
-    $button.innerHTML = svg;
+    $button.innerHTML = partData.path;
     return $button;
 }
