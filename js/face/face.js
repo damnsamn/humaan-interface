@@ -1,10 +1,10 @@
-import $ from 'jquery';
-import {SVG} from '@svgdotjs/svg.js';
-import {debug, gridSize, gridDivisions, gridPadding} from './config';
-import {grid, chooseRandomColor, randomInt, randomIntHalf, getSvgFromPath, Flip} from '../utilities';
-import {eyeList, mouthList, noseList} from './parts';
+import $ from "jquery";
+import {SVG} from "@svgdotjs/svg.js";
+import {debug, gridSize, gridDivisions, gridPadding} from "./config";
+import {grid, chooseRandomColor, randomInt, randomIntHalf, getSvgFromPath, Flip} from "../utilities";
+import {eyeList, mouthList, noseList} from "./parts";
 
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 export const Moods = {
     RANDOM: 0,
@@ -23,18 +23,18 @@ let mouthPart,
 
 const width = (gridDivisions + gridPadding * 2) * gridSize,
     height = width,
-    renderedEvent = new Event('svgUpdated');
+    renderedEvent = new Event("svgUpdated");
 
-let draw = SVG().addTo('#face').size(width, height).id('face-svg').viewbox(0, 0, width, height);
+let draw = SVG().addTo("#face").size(width, height).id("face-svg").viewbox(0, 0, width, height);
 
-let background = draw.rect(width, height).attr({fill: faceBackgroundColor}).id('background');
+let background = draw.rect(width, height).attr({fill: faceBackgroundColor}).id("background");
 
 let face = draw
     .nested()
     .size(gridSize * gridDivisions, gridSize * gridDivisions)
     .move(grid(gridPadding), grid(gridPadding))
     .fill(faceForegroundColor)
-    .id('foreground');
+    .id("foreground");
 
 let gridLines = draw
     .nested()
@@ -49,35 +49,33 @@ for (let i = 1; i < gridDivisions; i++) {
     gridLines.rect(gridDivisions * gridSize, gridDivisions * gridSize).fill({color: null, opacity: 0});
 }
 
-render();
-
 let draggingPart;
-const faceSVG = document.querySelector('#face-svg');
+const faceSVG = document.querySelector("#face-svg");
 
-faceSVG.addEventListener('mouseover', onMouseOver);
-faceSVG.addEventListener('touchstart', onMouseOver);
+faceSVG.addEventListener("mouseover", onMouseOver);
+faceSVG.addEventListener("touchstart", onMouseOver);
 
-faceSVG.addEventListener('mouseout', onMouseOut);
-faceSVG.addEventListener('touchend', onMouseOut);
+faceSVG.addEventListener("mouseout", onMouseOut);
+faceSVG.addEventListener("touchend", onMouseOut);
 
-faceSVG.addEventListener('mousedown', onMouseDown);
-faceSVG.addEventListener('touchstart', onMouseDown);
+faceSVG.addEventListener("mousedown", onMouseDown);
+faceSVG.addEventListener("touchstart", onMouseDown);
 
 function onMouseOver(e) {
-    const part = e.target.closest('#foreground > *');
-    if (part && !draggingPart) part.classList.add('hover');
+    const part = e.target.closest("#foreground > *");
+    if (part && !draggingPart) part.classList.add("hover");
 }
 
 function onMouseOut(e) {
-    const part = e.target.closest('#foreground > *');
+    const part = e.target.closest("#foreground > *");
     if (part && !draggingPart) {
-        part.classList.remove('hover');
+        part.classList.remove("hover");
         hideGrid();
     }
 }
 
 function onMouseDown(e) {
-    const part = e.target.closest('#foreground > *');
+    const part = e.target.closest("#foreground > *");
     if (part) {
         showGrid();
         draggingPart = true;
@@ -88,12 +86,12 @@ function onMouseDown(e) {
 
         partSVG
             .rect(partSVG.width(), partSVG.height())
-            .fill('transparent')
+            .fill("transparent")
             .stroke({color: faceForegroundColor, width: 2 * scale})
-            .id('outline');
+            .id("outline");
 
         partSVG.front();
-        part.classList.add('dragging');
+        part.classList.add("dragging");
 
         if (e.touches && e.touches.length > 0) {
             setTouchEventOffsets(e, faceSVG);
@@ -104,11 +102,11 @@ function onMouseDown(e) {
         const startOffsetX = startX - (partSVG.x() + gridPadding * gridSize);
         const startOffsetY = startY - (partSVG.y() + gridPadding * gridSize);
 
-        faceSVG.addEventListener('mousemove', onMouseMove);
-        faceSVG.addEventListener('touchmove', onMouseMove);
+        faceSVG.addEventListener("mousemove", onMouseMove);
+        faceSVG.addEventListener("touchmove", onMouseMove);
 
-        document.addEventListener('mouseup', onMouseUp);
-        document.addEventListener('touchend', onMouseUp);
+        document.addEventListener("mouseup", onMouseUp);
+        document.addEventListener("touchend", onMouseUp);
 
         function onMouseMove(e) {
             e.preventDefault();
@@ -130,36 +128,39 @@ function onMouseDown(e) {
         function onMouseUp(e) {
             draggingPart = null;
             hideGrid();
-            partSVG.find('#outline').remove();
-            part.classList.remove('hover');
-            part.classList.remove('dragging');
+            partSVG.find("#outline").remove();
+            part.classList.remove("hover");
+            part.classList.remove("dragging");
 
-            faceSVG.removeEventListener('mousemove', onMouseMove);
-            faceSVG.removeEventListener('touchmove', onMouseMove);
+            faceSVG.removeEventListener("mousemove", onMouseMove);
+            faceSVG.removeEventListener("touchmove", onMouseMove);
 
-            document.removeEventListener('mouseup', onMouseUp);
-            document.removeEventListener('touchend', onMouseUp);
+            document.removeEventListener("mouseup", onMouseUp);
+            document.removeEventListener("touchend", onMouseUp);
 
             document.dispatchEvent(renderedEvent);
         }
     }
 }
 
-function render() {
+export function render() {
     mouthPart = renderPart(face, mouthList, true);
+    const [mouth, mouthData] = mouthPart;
+    setActivePart(document.querySelector("#parts-mouth"), mouthData.name);
 
-    let [mouth, mouthData] = mouthPart;
     eyeSlots = mouthData.slots;
 
-    console.log({mouth, mouthData});
-
+    setActivePart(document.querySelector("#parts-nose"), "Nose00");
     if (!mouthData.skipNose) {
         nosePart = renderPart(face, noseList);
         const [nose, noseData] = nosePart;
+        setActivePart(document.querySelector("#parts-nose"), noseData.name);
 
         eyeSlots = noseData.slots;
     }
 
+    setActivePart(document.querySelector("#parts-eye-1"), "Eye00");
+    setActivePart(document.querySelector("#parts-eye-2"), "Eye00");
     drawEyes(face);
 
     document.dispatchEvent(renderedEvent);
@@ -188,7 +189,7 @@ function renderPart(face, partList, shouldFlipY) {
         .id(partData.name);
 
     // Flip part
-    flipX && part.children().children().flip('x');
+    flipX && part.children().children().flip("x");
     if (shouldFlipY && flipY) {
         // flipX && part.children().children().flip("x")
         part.children().children().rotate(180);
@@ -222,15 +223,15 @@ function renderPart(face, partList, shouldFlipY) {
     if (debug) {
         face.rect(grid(partData.boundW), grid(partData.boundH))
             .move(grid(partData.boundX), grid(partData.boundY))
-            .fill({color: '#ff00ff', opacity: 0.2})
-            .stroke('#ff00ff');
+            .fill({color: "#ff00ff", opacity: 0.2})
+            .stroke("#ff00ff");
         if (partData.slots) {
             for (let i = 0; i < partData.slots.length; i++) {
                 const slot = partData.slots[i];
                 face.rect(grid(slot.width), grid(slot.height))
                     .move(grid(slot.x), grid(slot.y))
-                    .fill({color: '#0000ff', opacity: 0.2})
-                    .stroke('#0000ff');
+                    .fill({color: "#0000ff", opacity: 0.2})
+                    .stroke("#0000ff");
             }
         }
     }
@@ -246,7 +247,7 @@ function drawEyes(face) {
         let slotW = Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width));
         let slotH = Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height));
 
-        debug && face.line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH)).stroke('#000');
+        debug && face.line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH)).stroke("#000");
 
         const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH);
         const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
@@ -263,13 +264,15 @@ function drawEyes(face) {
             .id(eyeData.name);
 
         // Flip part
-        flipX && eye.children().children().flip('x');
+        flipX && eye.children().children().flip("x");
 
         // Position part
         const x = randomIntHalf(slotW - eyeData.width),
             y = randomIntHalf(slotH - eyeData.height);
         eye.dmove(grid(x), grid(y));
         eye.flatten();
+
+        setActivePart(document.querySelector("#parts-eye-" + (i + 1)), eyeData.name);
     }
 }
 
@@ -285,14 +288,14 @@ export function setFaceBackground(color) {
 }
 
 export function getFaceSVG(radius) {
-    const hoveredParts = faceSVG.querySelectorAll('.hover');
-    hoveredParts.forEach((part) => part.classList.remove('hover'));
+    const hoveredParts = faceSVG.querySelectorAll(".hover");
+    hoveredParts.forEach((part) => part.classList.remove("hover"));
     const newSVG = draw.clone();
-    newSVG.attr('xmlns:svgjs', null);
+    newSVG.attr("xmlns:svgjs", null);
 
-    if (radius) newSVG.find('#background').radius(radius);
+    if (radius) newSVG.find("#background").radius(radius);
 
-    hoveredParts.forEach((part) => part.classList.add('hover'));
+    hoveredParts.forEach((part) => part.classList.add("hover"));
     return newSVG.svg();
 }
 
@@ -306,20 +309,20 @@ export function setFromHistory(id) {
     let historyFace = SVG(`#${id}`).clone();
     addToHistory();
     draw.clear();
-    background = historyFace.findOne('rect').addTo(draw).id('background');
-    faceBackgroundColor = background.fill();
-    face = historyFace.findOne('svg').addTo(draw).id('foreground');
-    faceForegroundColor = face.fill();
+    background = historyFace.findOne("rect").addTo(draw).id("background");
+    faceBackgroundColor = background.fill().toUpperCase();
+    face = historyFace.findOne("svg").addTo(draw).id("foreground");
+    faceForegroundColor = face.fill().toUpperCase();
     document.dispatchEvent(renderedEvent);
 }
 function addToHistory() {
-    const state = Flip.getState('#face-history');
+    const state = Flip.getState("#face-history");
     const oldFace = draw
         .clone()
-        .addTo('#face-history')
+        .addTo("#face-history")
         .back()
-        .id('history-' + history.length);
-    $('#history-' + history.length).wrap("<div class='face-history__item' tabindex='0'></div>");
+        .id("history-" + history.length);
+    $("#history-" + history.length).wrap("<div class='face-history__item' tabindex='0'></div>");
     history.unshift(oldFace);
     if (history.length > 5) {
         history[5].parent().remove();
@@ -341,4 +344,9 @@ function setTouchEventOffsets(e, parent) {
         e.offsetX = touch.pageX - parent.getBoundingClientRect().left;
         e.offsetY = touch.pageY - parent.getBoundingClientRect().top;
     }
+}
+
+export function setActivePart(buttonsEl, name) {
+    buttonsEl.childNodes.forEach((button) => button.classList.remove("active"));
+    buttonsEl.querySelector(`[data-part="${name}"]`)?.classList.add("active");
 }

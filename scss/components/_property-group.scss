@@ -27,6 +27,12 @@
       align-items: center;
       justify-content: center;
 
+      &.active, &.disabled {
+        &::after {
+          content: none !important;
+        }
+      }
+
       svg {
         transform: scale(0.2);
         flex: none;
@@ -83,7 +89,7 @@
         @return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M-102.69,548.12a6,6,0,0,0-6,6,6,6,0,0,0,6,6,6,6,0,0,0,6-6A6,6,0,0,0-102.69,548.12Zm-.9,9.15-2.65-2.65,1.06-1.06,1.59,1.59,3.61-3.62,1.06,1.06Z" transform="translate(108.69 -548.12)" fill="#{$color}"/></svg>';
       }
 
-      &::after {
+      &::before {
         content: "";
         position: absolute;
         top: 0;
@@ -94,7 +100,7 @@
         border-radius: inherit;
       }
 
-      &::before {
+      &::after {
         content: "";
         position: absolute;
         width: 100%;
