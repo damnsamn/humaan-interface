@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import "/scss/style.scss";
+import '/scss/style.scss';
 import ColorContrastChecker from 'color-contrast-checker';
 import {
     faceForegroundColor,
@@ -17,9 +17,9 @@ import {eyeList, mouthList, noseList} from './face/parts';
 
 let contrastChecker = new ColorContrastChecker();
 
-updateCSSColors();
-debugger;
 document.addEventListener('DOMContentLoaded', () => {
+    updateCSSColors();
+    updateFavicon();
 
     document.body.classList.toggle('colours-applied');
 
@@ -32,18 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const noseButtons = document.querySelector('#parts-nose');
+    noseButtons.appendChild(createPartButton({name: 'Nose00'}));
     noseList.forEach((nose) => {
         noseButtons.appendChild(createPartButton(nose));
     });
 
     const eye1Buttons = document.querySelector('#parts-eye-1');
     const eye2Buttons = document.querySelector('#parts-eye-2');
+    eye1Buttons.appendChild(createPartButton({name: 'Eye00'}));
+    eye2Buttons.appendChild(createPartButton({name: 'Eye00'}));
     eyeList.forEach((eye) => {
         eye1Buttons.appendChild(createPartButton(eye));
         eye2Buttons.appendChild(createPartButton(eye));
     });
 
     const mouthButtons = document.querySelector('#parts-mouth');
+    mouthButtons.appendChild(createPartButton({name: 'Mouth00'}));
     mouthList.forEach((mouth) => {
         mouthButtons.appendChild(createPartButton(mouth));
     });
@@ -77,24 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateBackgroundButtons(bg);
                 }
             }
-
-            // if (fg && fg !== faceForegroundColor) {
-            //     if (fg === faceBackgroundColor) {
-            //         setFaceForeground(faceBackgroundColor);
-            //         updateBackgroundButtons(faceBackgroundColor);
-            //     }
-            //     setFaceBackground(fg);
-            //     updateForegroundButtons(fg);
-            // }
-            // if (bg && bg !== faceBackgroundColor) {
-            //     console.log({bg, faceForegroundColor, faceBackgroundColor})
-            //     if (bg === faceForegroundColor) {
-            //         setFaceBackground(faceForegroundColor);
-            //         updateForegroundButtons(faceForegroundColor);
-            //     }
-            //     setFaceForeground(bg);
-            //     updateBackgroundButtons(bg);
-            // }
 
             updateCSSColors();
             updateFavicon();
@@ -237,10 +223,13 @@ function createColorButton(color, isForeground) {
 
 function createPartButton(partData) {
     const $button = document.createElement('button');
-    // const svgBase64 = partData.path.match(/data:.+?,(.*)/)[1];
-    // const svg = atob(svgBase64).trim();
+
     $button.classList.add('property-group__button', 'property-group__button--part');
     $button.dataset.part = partData.name;
-    $button.innerHTML = partData.path;
+
+    if (partData?.path) {
+        $button.innerHTML = partData.path;
+    }
+
     return $button;
 }

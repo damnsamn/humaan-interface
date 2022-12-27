@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $ from 'jquery';
 import {SVG} from '@svgdotjs/svg.js';
 import {debug, gridSize, gridDivisions, gridPadding} from './config';
 import {grid, chooseRandomColor, randomInt, randomIntHalf, getSvgFromPath, Flip} from '../utilities';
@@ -16,8 +16,8 @@ export let faceBackgroundColor = chooseRandomColor(),
     faceForegroundColor = chooseRandomColor(),
     mood = Moods.RANDOM;
 
-let mouthData,
-    noseData,
+let mouthPart,
+    nosePart,
     eyeSlots = [],
     history = [];
 
@@ -146,95 +146,99 @@ function onMouseDown(e) {
 }
 
 function render() {
-    mouthData = renderPart(face, mouthList, true).then(async (mouth) => {
-        eyeSlots = mouth.slots;
+    mouthPart = renderPart(face, mouthList, true);
 
-        if (!mouth.skipNose) {
-            noseData = await renderPart(face, noseList).then((nose) => {
-                eyeSlots = nose.slots;
-            });
-        }
+    let [mouth, mouthData] = mouthPart;
+    eyeSlots = mouthData.slots;
 
-        await drawEyes(face).then(() => {
-            document.dispatchEvent(renderedEvent);
-        });
-    });
+    console.log({mouth, mouthData});
+
+    if (!mouthData.skipNose) {
+        nosePart = renderPart(face, noseList);
+        const [nose, noseData] = nosePart;
+
+        eyeSlots = noseData.slots;
+    }
+
+    drawEyes(face);
+
+    document.dispatchEvent(renderedEvent);
 }
 
-async function renderPart(face, partList, shouldFlipY) {
+function renderPart(face, partList, shouldFlipY) {
     let partListCopy = cloneDeep(partList);
     const i = randomInt(partListCopy.length - 1),
         partData = partListCopy[i];
+    let part;
 
-        console.log({partData})
-    await getSvgFromPath(partData.path).then((value) => {
-        const flipX = randomInt(1),
-            flipY = mood === Moods.RANDOM ? randomInt(1) : mood === Moods.HAPPY ? 0 : mood === Moods.HAPPY ? 1 : false;
+    const svg = getSvgFromPath(partData.path);
 
-        // Flip bounds
-        if (flipX) partData.boundX = gridDivisions - partData.boundX - partData.boundW;
+    const flipX = randomInt(1),
+        flipY = mood === Moods.RANDOM ? randomInt(1) : mood === Moods.HAPPY ? 0 : mood === Moods.HAPPY ? 1 : false;
 
-        // Define part
-        const part = face
-            .nested()
-            .svg(value)
-            .move(grid(partData.boundX), grid(partData.boundY))
-            .size(grid(partData.width), grid(partData.height))
-            .id(partData.name);
+    // Flip bounds
+    if (flipX) partData.boundX = gridDivisions - partData.boundX - partData.boundW;
 
-        // Flip part
-        flipX && part.children().children().flip('x');
-        if (shouldFlipY && flipY) {
-            // flipX && part.children().children().flip("x")
-            part.children().children().rotate(180);
+    // Define part
+    part = face
+        .nested()
+        .svg(svg)
+        .move(grid(partData.boundX), grid(partData.boundY))
+        .size(grid(partData.width), grid(partData.height))
+        .id(partData.name);
+
+    // Flip part
+    flipX && part.children().children().flip('x');
+    if (shouldFlipY && flipY) {
+        // flipX && part.children().children().flip("x")
+        part.children().children().rotate(180);
+    }
+
+    // Position part
+    const x = randomIntHalf(partData.boundW - partData.width),
+        y = randomIntHalf(partData.boundH - partData.height);
+    part.dmove(grid(x), grid(y));
+
+    if (partData.slots) {
+        // Normalise slots
+        for (let i = 0; i < partData.slots.length; i++) {
+            const slot = partData.slots[i];
+            slot.x += partData.boundX + x;
+            slot.y += partData.boundY + y;
         }
 
-        // Position part
-        const x = randomIntHalf(partData.boundW - partData.width),
-            y = randomIntHalf(partData.boundH - partData.height);
-        part.dmove(grid(x), grid(y));
+        // Flip slots
+        if (flipX) {
+            for (let i = 0; i < partData.slots.length; i++) {
+                const slot = partData.slots[i],
+                    axis = partData.boundX + x + partData.width / 2;
 
+                slot.x = axis - (slot.x - axis) - slot.width;
+            }
+        }
+    }
+
+    // DEBUG: Draw bounds
+    if (debug) {
+        face.rect(grid(partData.boundW), grid(partData.boundH))
+            .move(grid(partData.boundX), grid(partData.boundY))
+            .fill({color: '#ff00ff', opacity: 0.2})
+            .stroke('#ff00ff');
         if (partData.slots) {
-            // Normalise slots
             for (let i = 0; i < partData.slots.length; i++) {
                 const slot = partData.slots[i];
-                slot.x += partData.boundX + x;
-                slot.y += partData.boundY + y;
-            }
-
-            // Flip slots
-            if (flipX) {
-                for (let i = 0; i < partData.slots.length; i++) {
-                    const slot = partData.slots[i],
-                        axis = partData.boundX + x + partData.width / 2;
-
-                    slot.x = axis - (slot.x - axis) - slot.width;
-                }
+                face.rect(grid(slot.width), grid(slot.height))
+                    .move(grid(slot.x), grid(slot.y))
+                    .fill({color: '#0000ff', opacity: 0.2})
+                    .stroke('#0000ff');
             }
         }
-
-        // DEBUG: Draw bounds
-        if (debug) {
-            face.rect(grid(partData.boundW), grid(partData.boundH))
-                .move(grid(partData.boundX), grid(partData.boundY))
-                .fill({color: '#ff00ff', opacity: 0.2})
-                .stroke('#ff00ff');
-            if (partData.slots) {
-                for (let i = 0; i < partData.slots.length; i++) {
-                    const slot = partData.slots[i];
-                    face.rect(grid(slot.width), grid(slot.height))
-                        .move(grid(slot.x), grid(slot.y))
-                        .fill({color: '#0000ff', opacity: 0.2})
-                        .stroke('#0000ff');
-                }
-            }
-        }
-        part.flatten();
-    });
-    return partData;
+    }
+    part.flatten();
+    return [part, partData];
 }
 
-async function drawEyes(face) {
+function drawEyes(face) {
     for (let i = 0; i < eyeSlots.length; i++) {
         const slot = eyeSlots[i];
         let slotX = Math.max(0, slot.x);
@@ -247,26 +251,25 @@ async function drawEyes(face) {
         const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH);
         const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
 
-        await getSvgFromPath(eyeData.path).then((value) => {
-            const flipX = randomInt(1);
+        const svg = getSvgFromPath(eyeData.path);
+        const flipX = randomInt(1);
 
-            // Render part
-            const eye = face
-                .nested()
-                .svg(value)
-                .size(grid(eyeData.width), grid(eyeData.height))
-                .move(grid(slotX), grid(slotY))
-                .id(eyeData.name);
+        // Render part
+        const eye = face
+            .nested()
+            .svg(svg)
+            .size(grid(eyeData.width), grid(eyeData.height))
+            .move(grid(slotX), grid(slotY))
+            .id(eyeData.name);
 
-            // Flip part
-            flipX && eye.children().children().flip('x');
+        // Flip part
+        flipX && eye.children().children().flip('x');
 
-            // Position part
-            const x = randomIntHalf(slotW - eyeData.width),
-                y = randomIntHalf(slotH - eyeData.height);
-            eye.dmove(grid(x), grid(y));
-            eye.flatten();
-        });
+        // Position part
+        const x = randomIntHalf(slotW - eyeData.width),
+            y = randomIntHalf(slotH - eyeData.height);
+        eye.dmove(grid(x), grid(y));
+        eye.flatten();
     }
 }
 

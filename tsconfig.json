@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "module": "ES6",
+    "noEmit": true,
+    "target": "ES6",
+    "moduleResolution": "node",
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -17,6 +17,7 @@
   border-radius: $border-radius--regular;
   box-shadow: none;
   @include pseudo-border(3px solid $color__foreground, inherit);
+
   &::before {
     transition: inherit;
   }

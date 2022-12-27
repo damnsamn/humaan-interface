@@ -15,7 +15,7 @@ export const grid = (value) => value * gridSize;
 let changedColors = [...colors];
 export const chooseRandomColor = () => changedColors.splice(randomInt(changedColors.length - 1), 1)[0]
 
-export async function getSvgFromPath(path) {
+export function getSvgFromPath(path) {
   const parser = new DOMParser();
   const svgDoc = parser.parseFromString(path, "image/svg+xml")
   const svg = svgDoc.firstChild;
