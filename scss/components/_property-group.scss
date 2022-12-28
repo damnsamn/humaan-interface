@@ -1,6 +1,7 @@
 @use "sass:color";
 
 .property-group {
+  $group: &;
   display: flex;
   flex-wrap: wrap;
   gap: $gutter-size * 0.5;
@@ -27,14 +28,15 @@
       align-items: center;
       justify-content: center;
 
-      &.active, &.disabled {
+      &.active,
+      &.disabled {
         &::after {
           content: none !important;
         }
       }
 
       svg {
-        transform: scale(0.2);
+        transform: scale($scale__part-button);
         flex: none;
         path {
           fill: var(--face-foreground);
@@ -112,6 +114,23 @@
         background-position: center;
         background-repeat: no-repeat;
       }
+    }
+  }
+
+  &.flip-x {
+    #{$group}__button svg {
+      transform: scale(-$scale__part-button, $scale__part-button);
+    }
+  }
+  &.flip-y {
+    #{$group}__button svg {
+      transform: scale($scale__part-button, -$scale__part-button);
+    }
+  }
+
+  &.flip-x.flip-y {
+    #{$group}__button svg {
+      transform: scale(-$scale__part-button, -$scale__part-button);
     }
   }
 }

@@ -1,20 +1,19 @@
-import $ from "jquery";
-import "/scss/style.scss";
 import ColorContrastChecker from "color-contrast-checker";
+import {colors} from "./face/config";
 import {
-    faceForegroundColor,
+    addToHistory,
+    face,
     faceBackgroundColor,
+    faceForegroundColor,
+    getFaceSVG,
+    randomiseFace,
     setFaceBackground,
     setFaceForeground,
-    getFaceSVG,
-    randomiseFaceParts,
     setFromHistory,
-    showGrid,
-    hideGrid,
-    render,
 } from "./face/face";
-import {colors} from "./face/config";
 import {eyeList, mouthList, noseList} from "./face/parts";
+import flipIcon from "/assets/images/flip.svg";
+import "/scss/style.scss";
 
 let contrastChecker = new ColorContrastChecker();
 
@@ -48,6 +47,21 @@ const mouthButtons = document.querySelector("#parts-mouth");
 mouthButtons.appendChild(createPartButton({name: "Mouth00"}));
 mouthList.forEach((mouth) => {
     mouthButtons.appendChild(createPartButton(mouth));
+});
+
+const flipButtons = document.querySelectorAll("[data-flip]");
+flipButtons.forEach((button) => {
+    button.innerHTML = flipIcon;
+    button.addEventListener("click", () => {
+        const axis = button.dataset.flip;
+        button.classList.toggle("active");
+        const propertyGroup = button.parentElement.nextElementSibling;
+        propertyGroup.classList.toggle("flip-"+axis);
+
+        const name = propertyGroup.querySelector(".active").dataset.part;
+        face.findOne("#"+name).children().flip(axis);
+
+    });
 });
 
 const allColorButtons = document.querySelectorAll(".property-group__button--color");
@@ -87,7 +101,9 @@ allColorButtons.forEach((button) =>
 
 const randomiseButton = document.querySelector("#randomise");
 randomiseButton.addEventListener("click", () => {
-    randomiseFaceParts();
+    addToHistory();
+    face.children().remove();
+    randomiseFace();
     faceJiggle();
 });
 
@@ -114,7 +130,7 @@ document.addEventListener("svgUpdated", function () {
     updateFavicon();
 });
 
-render();
+randomiseFace();
 
 function updateForegroundButtons(color) {
     const foregroundButtons = document.querySelectorAll(".property-group__button--color[data-foreground]");

@@ -7,6 +7,9 @@ import $ from "jquery"
 // Returns a random int between 0 and provided max
 export const randomInt = (max) => Math.round(Math.random() * (max));
 
+// Returns a random boolean
+export const randomBool = (max) => !!randomInt(1);
+
 // Returns a random 0.5 between 0 and provided max
 export const randomIntHalf = (max) => Math.round(Math.random() * (max) * 2) / 2;
 

@@ -3,8 +3,7 @@ import {SVG} from "@svgdotjs/svg.js";
 import {debug, gridSize, gridDivisions, gridPadding} from "./config";
 import {grid, chooseRandomColor, randomInt, randomIntHalf, getSvgFromPath, Flip} from "../utilities";
 import {eyeList, mouthList, noseList} from "./parts";
-
-import cloneDeep from "lodash/cloneDeep";
+import {Part} from "../Part";
 
 export const Moods = {
     RANDOM: 0,
@@ -16,10 +15,7 @@ export let faceBackgroundColor = chooseRandomColor(),
     faceForegroundColor = chooseRandomColor(),
     mood = Moods.RANDOM;
 
-let mouthPart,
-    nosePart,
-    eyeSlots = [],
-    history = [];
+const history = [];
 
 const width = (gridDivisions + gridPadding * 2) * gridSize,
     height = width,
@@ -29,7 +25,7 @@ let draw = SVG().addTo("#face").size(width, height).id("face-svg").viewbox(0, 0,
 
 let background = draw.rect(width, height).attr({fill: faceBackgroundColor}).id("background");
 
-let face = draw
+export let face = draw
     .nested()
     .size(gridSize * gridDivisions, gridSize * gridDivisions)
     .move(grid(gridPadding), grid(gridPadding))
@@ -143,137 +139,38 @@ function onMouseDown(e) {
     }
 }
 
-export function render() {
-    mouthPart = renderPart(face, mouthList, true);
-    const [mouth, mouthData] = mouthPart;
-    setActivePart(document.querySelector("#parts-mouth"), mouthData.name);
+const eye1Part = new Part(eyeList, false);
+const eye2Part = new Part(eyeList, false);
+const nosePart = new Part(noseList, false);
+const mouthPart = new Part(mouthList, true);
 
-    eyeSlots = mouthData.slots;
+export function randomiseFace() {
+    eye1Part.clear();
+    eye2Part.clear();
+    nosePart.clear();
+    mouthPart.clear();
 
-    setActivePart(document.querySelector("#parts-nose"), "Nose00");
-    if (!mouthData.skipNose) {
-        nosePart = renderPart(face, noseList);
-        const [nose, noseData] = nosePart;
-        setActivePart(document.querySelector("#parts-nose"), noseData.name);
+    mouthPart.randomise();
 
-        eyeSlots = noseData.slots;
+    let eyeSlots = mouthPart.partData.slots;
+
+    if (!mouthPart.partData.skipNose) {
+        nosePart.randomise();
+        eyeSlots = nosePart.partData.slots;
     }
 
-    setActivePart(document.querySelector("#parts-eye-1"), "Eye00");
-    setActivePart(document.querySelector("#parts-eye-2"), "Eye00");
-    drawEyes(face);
+    if (eyeSlots[0]) {
+        eye1Part.randomise(eyeSlots[0]);
+    }
+
+    if (eyeSlots[1]) {
+        eye2Part.randomise(eyeSlots[1]);
+    }
+
+    updatePartButtonStates();
+    updateFlipButtonStates();
 
     document.dispatchEvent(renderedEvent);
-}
-
-function renderPart(face, partList, shouldFlipY) {
-    let partListCopy = cloneDeep(partList);
-    const i = randomInt(partListCopy.length - 1),
-        partData = partListCopy[i];
-    let part;
-
-    const svg = getSvgFromPath(partData.path);
-
-    const flipX = randomInt(1),
-        flipY = mood === Moods.RANDOM ? randomInt(1) : mood === Moods.HAPPY ? 0 : mood === Moods.HAPPY ? 1 : false;
-
-    // Flip bounds
-    if (flipX) partData.boundX = gridDivisions - partData.boundX - partData.boundW;
-
-    // Define part
-    part = face
-        .nested()
-        .svg(svg)
-        .move(grid(partData.boundX), grid(partData.boundY))
-        .size(grid(partData.width), grid(partData.height))
-        .id(partData.name);
-
-    // Flip part
-    flipX && part.children().children().flip("x");
-    if (shouldFlipY && flipY) {
-        // flipX && part.children().children().flip("x")
-        part.children().children().rotate(180);
-    }
-
-    // Position part
-    const x = randomIntHalf(partData.boundW - partData.width),
-        y = randomIntHalf(partData.boundH - partData.height);
-    part.dmove(grid(x), grid(y));
-
-    if (partData.slots) {
-        // Normalise slots
-        for (let i = 0; i < partData.slots.length; i++) {
-            const slot = partData.slots[i];
-            slot.x += partData.boundX + x;
-            slot.y += partData.boundY + y;
-        }
-
-        // Flip slots
-        if (flipX) {
-            for (let i = 0; i < partData.slots.length; i++) {
-                const slot = partData.slots[i],
-                    axis = partData.boundX + x + partData.width / 2;
-
-                slot.x = axis - (slot.x - axis) - slot.width;
-            }
-        }
-    }
-
-    // DEBUG: Draw bounds
-    if (debug) {
-        face.rect(grid(partData.boundW), grid(partData.boundH))
-            .move(grid(partData.boundX), grid(partData.boundY))
-            .fill({color: "#ff00ff", opacity: 0.2})
-            .stroke("#ff00ff");
-        if (partData.slots) {
-            for (let i = 0; i < partData.slots.length; i++) {
-                const slot = partData.slots[i];
-                face.rect(grid(slot.width), grid(slot.height))
-                    .move(grid(slot.x), grid(slot.y))
-                    .fill({color: "#0000ff", opacity: 0.2})
-                    .stroke("#0000ff");
-            }
-        }
-    }
-    part.flatten();
-    return [part, partData];
-}
-
-function drawEyes(face) {
-    for (let i = 0; i < eyeSlots.length; i++) {
-        const slot = eyeSlots[i];
-        let slotX = Math.max(0, slot.x);
-        let slotY = Math.max(0, slot.y);
-        let slotW = Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width));
-        let slotH = Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height));
-
-        debug && face.line(grid(slotX), grid(slotY), grid(slotX + slotW), grid(slotY + slotH)).stroke("#000");
-
-        const availableEyes = eyeList.filter((element) => element.width <= slotW && element.height <= slotH);
-        const eyeData = availableEyes[randomInt(availableEyes.length - 1)];
-
-        const svg = getSvgFromPath(eyeData.path);
-        const flipX = randomInt(1);
-
-        // Render part
-        const eye = face
-            .nested()
-            .svg(svg)
-            .size(grid(eyeData.width), grid(eyeData.height))
-            .move(grid(slotX), grid(slotY))
-            .id(eyeData.name);
-
-        // Flip part
-        flipX && eye.children().children().flip("x");
-
-        // Position part
-        const x = randomIntHalf(slotW - eyeData.width),
-            y = randomIntHalf(slotH - eyeData.height);
-        eye.dmove(grid(x), grid(y));
-        eye.flatten();
-
-        setActivePart(document.querySelector("#parts-eye-" + (i + 1)), eyeData.name);
-    }
 }
 
 export function setFaceForeground(color) {
@@ -299,33 +196,46 @@ export function getFaceSVG(radius) {
     return newSVG.svg();
 }
 
-export function randomiseFaceParts() {
-    addToHistory();
-    face.children().remove();
-    render();
-}
-
 export function setFromHistory(id) {
     let historyFace = SVG(`#${id}`).clone();
     addToHistory();
     draw.clear();
     background = historyFace.findOne("rect").addTo(draw).id("background");
     faceBackgroundColor = background.fill().toUpperCase();
+
     face = historyFace.findOne("svg").addTo(draw).id("foreground");
+    eye1Part.face = face;
+    eye2Part.face = face;
+    nosePart.face = face;
+    mouthPart.face = face;
+
     faceForegroundColor = face.fill().toUpperCase();
     document.dispatchEvent(renderedEvent);
 }
-function addToHistory() {
+
+export function addToHistory() {
     const state = Flip.getState("#face-history");
+
     const oldFace = draw
         .clone()
         .addTo("#face-history")
         .back()
         .id("history-" + history.length);
+    const oldEye1Part = {...eye1Part};
+    const oldEye2Part = {...eye2Part};
+    const oldNosePart = {...nosePart};
+    const oldMouthPart = {...mouthPart};
+
     $("#history-" + history.length).wrap("<div class='face-history__item' tabindex='0'></div>");
-    history.unshift(oldFace);
+    history.unshift({
+        oldFace,
+        oldEye1Part,
+        oldEye2Part,
+        oldNosePart,
+        oldMouthPart,
+    });
     if (history.length > 5) {
-        history[5].parent().remove();
+        history[5].oldFace.parent().remove();
     }
     Flip.from(state);
 }
@@ -346,7 +256,38 @@ function setTouchEventOffsets(e, parent) {
     }
 }
 
-export function setActivePart(buttonsEl, name) {
+export function setActivePartButton(buttonsEl, name) {
     buttonsEl.childNodes.forEach((button) => button.classList.remove("active"));
     buttonsEl.querySelector(`[data-part="${name}"]`)?.classList.add("active");
+}
+
+export function updatePartButtonStates() {
+    document.querySelector("#parts-eye-1").childNodes.forEach((button) => {
+        button.classList.toggle("active", button.dataset.part === (eye1Part.partData?.name ?? "Eye00"));
+    });
+    document.querySelector("#parts-eye-2").childNodes.forEach((button) => {
+        button.classList.toggle("active", button.dataset.part === (eye2Part.partData?.name ?? "Eye00"));
+    });
+    document.querySelector("#parts-nose").childNodes.forEach((button) => {
+        button.classList.toggle("active", button.dataset.part === (nosePart.partData?.name ?? "Nose00"));
+    });
+    document.querySelector("#parts-mouth").childNodes.forEach((button) => {
+        button.classList.toggle("active", button.dataset.part === (mouthPart.partData?.name ?? "Mouth00"));
+    });
+}
+
+export function updateFlipButtonStates() {
+    document.querySelector("#eye-1-flip-x").classList.toggle("active", eye1Part.flipX);
+    document.querySelector("#parts-eye-1").classList.toggle("flip-x", eye1Part.flipX);
+
+    document.querySelector("#eye-2-flip-x").classList.toggle("active", eye2Part.flipX);
+    document.querySelector("#parts-eye-2").classList.toggle("flip-x", eye2Part.flipX);
+
+    document.querySelector("#nose-flip-x").classList.toggle("active", nosePart.flipX);
+    document.querySelector("#parts-nose").classList.toggle("flip-x", nosePart.flipX);
+
+    document.querySelector("#mouth-flip-x").classList.toggle("active", mouthPart.flipX);
+    document.querySelector("#mouth-flip-y").classList.toggle("active", mouthPart.flipY);
+    document.querySelector("#parts-mouth").classList.toggle("flip-x", mouthPart.flipX);
+    document.querySelector("#parts-mouth").classList.toggle("flip-y", mouthPart.flipY);
 }

@@ -17,6 +17,7 @@
   border-radius: $border-radius--regular;
   box-shadow: none;
   @include pseudo-border(3px solid $color__foreground, inherit);
+  transition: $transition--short;
 
   &::before {
     transition: inherit;
@@ -25,7 +26,6 @@
   @include hover-focus {
     box-shadow: 0 2px 5px rgba($color--dark, 0.33);
     transform: translateY(-3px);
-    transition: $transition--short;
   }
 
   > i {
