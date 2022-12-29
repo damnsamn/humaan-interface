@@ -4,34 +4,35 @@ import {face} from "./face/face";
 import {getSvgFromPath, grid, randomBool, randomInt, randomIntHalf} from "./utilities";
 
 export class Part {
+    static #instances = [];
+
+    name;
     #partList;
     #shouldFlipY;
 
     partData;
     flipX;
     flipY;
+    SVG;
 
-    #SVG;
     #boundX;
     #boundY;
     #boundW;
     #boundH;
 
-    constructor(partList, shouldFlipY) {
+    constructor(name, partList, shouldFlipY) {
+        this.name = name;
         this.#partList = partList;
         this.#shouldFlipY = shouldFlipY;
+
+        Part.#instances.push(this);
     }
 
     randomise(slot = null) {
         let i;
 
         if (slot) {
-            this.setBounds(
-                Math.max(0, slot.x),
-                Math.max(0, slot.y),
-                Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width)),
-                Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height)),
-            );
+            this.setBounds(...Object.values(Part.normaliseSlot(slot)));
 
             const availableParts = this.#partList.filter(
                 (element) => element.width <= this.#boundW && element.height <= this.#boundH,
@@ -71,11 +72,16 @@ export class Part {
         return this;
     }
 
-    set(index, flipX, flipY = false, slot = null) {
+    set(index, flipX = this.flipX, flipY = this.flipY, slot = null) {
         this.setFlipX(flipX);
         this.setFlipY(flipY);
 
         this.partData = cloneDeep(this.#partList[index]);
+
+        // If we're provided with a slot, ensure that we've set normalised bounds
+        if (slot) {
+            this.setBounds(...Object.values(Part.normaliseSlot(slot)));
+        }
 
         // If we're not within a slot, set our bounds. If we are - we're randomising they've already been set for that process
         if (!slot) {
@@ -90,24 +96,24 @@ export class Part {
         const svg = getSvgFromPath(this.partData.path);
 
         // Define part
-        this.#SVG = face
+        this.SVG = face
             .nested()
             .svg(svg)
             .move(grid(this.#boundX), grid(this.#boundY))
             .size(grid(this.partData.width), grid(this.partData.height))
-            .id(this.partData.name);
+            .id(this.name);
 
         // Flip part
-        flipX && this.#SVG.children().children().flip("x");
+        flipX && this.SVG.children().children().flip("x");
         if (this.#shouldFlipY && flipY) {
-            // this.#SVG.children().children().flip("y");
-            this.#SVG.children().children().rotate(180);
+            // this.SVG.children().children().flip("y");
+            this.SVG.children().children().rotate(180);
         }
 
         // Position part
         const x = randomIntHalf(this.#boundW - this.partData.width);
         const y = randomIntHalf(this.#boundH - this.partData.height);
-        this.#SVG.dmove(grid(x), grid(y));
+        this.SVG.dmove(grid(x), grid(y));
 
         // If part has slots, transform the slots to match
         if (this.partData.slots) {
@@ -131,16 +137,14 @@ export class Part {
 
         // DEBUG: Draw bounds
         if (debug) {
-            face
-                .rect(grid(this.#boundW), grid(this.#boundH))
+            face.rect(grid(this.#boundW), grid(this.#boundH))
                 .move(grid(this.#boundX), grid(this.#boundY))
                 .fill({color: "#ff00ff", opacity: 0.2})
                 .stroke("#ff00ff");
             if (this.partData.slots) {
                 for (let i = 0; i < this.partData.slots.length; i++) {
                     const slot = this.partData.slots[i];
-                    face
-                        .rect(grid(slot.width), grid(slot.height))
+                    face.rect(grid(slot.width), grid(slot.height))
                         .move(grid(slot.x), grid(slot.y))
                         .fill({color: "#0000ff", opacity: 0.2})
                         .stroke("#0000ff");
@@ -149,25 +153,44 @@ export class Part {
         }
 
         // Flatten the SVG
-        this.#SVG.flatten();
+        this.SVG.flatten();
 
         return this;
     }
 
     clear() {
-        if (this.#SVG) {
-            this.#SVG.remove();
+        if (this.SVG) {
+            this.SVG.remove();
         }
 
         this.partData = null;
         this.flipX = null;
         this.flipY = null;
-        this.#SVG = null;
+        this.SVG = null;
         this.#boundX = null;
         this.#boundY = null;
         this.#boundW = null;
         this.#boundH = null;
 
         return this;
+    }
+
+    setProperties(object) {
+        Object.entries(object).forEach(([key, value]) => {
+            this[key] = value;
+        });
+    }
+
+    static normaliseSlot(slot) {
+        return {
+            x: Math.max(0, slot.x),
+            y: Math.max(0, slot.y),
+            w: Math.abs(Math.max(0, slot.x) - Math.min(gridDivisions, slot.x + slot.width)),
+            h: Math.abs(Math.max(0, slot.y) - Math.min(gridDivisions, slot.y + slot.height)),
+        };
+    }
+
+    static getByName(name) {
+        return Part.#instances.find((part) => part.name === name);
     }
 }

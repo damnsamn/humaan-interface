@@ -1,4 +1,3 @@
-import $ from "jquery";
 import {SVG} from "@svgdotjs/svg.js";
 import {debug, gridSize, gridDivisions, gridPadding} from "./config";
 import {grid, chooseRandomColor, randomInt, randomIntHalf, getSvgFromPath, Flip} from "../utilities";
@@ -15,13 +14,10 @@ export let faceBackgroundColor = chooseRandomColor(),
     faceForegroundColor = chooseRandomColor(),
     mood = Moods.RANDOM;
 
-const history = [];
-
 const width = (gridDivisions + gridPadding * 2) * gridSize,
-    height = width,
-    renderedEvent = new Event("svgUpdated");
+    height = width;
 
-let draw = SVG().addTo("#face").size(width, height).id("face-svg").viewbox(0, 0, width, height);
+export const draw = SVG().addTo("#face").size(width, height).id("face-svg").viewbox(0, 0, width, height);
 
 let background = draw.rect(width, height).attr({fill: faceBackgroundColor}).id("background");
 
@@ -46,6 +42,12 @@ for (let i = 1; i < gridDivisions; i++) {
 }
 
 let draggingPart;
+
+export const eye1Part = new Part("eye-1", eyeList, false);
+export const eye2Part = new Part("eye-2", eyeList, false);
+export const nosePart = new Part("nose", noseList, false);
+export const mouthPart = new Part("mouth", mouthList, true);
+
 const faceSVG = document.querySelector("#face-svg");
 
 faceSVG.addEventListener("mouseover", onMouseOver);
@@ -133,16 +135,9 @@ function onMouseDown(e) {
 
             document.removeEventListener("mouseup", onMouseUp);
             document.removeEventListener("touchend", onMouseUp);
-
-            document.dispatchEvent(renderedEvent);
         }
     }
 }
-
-const eye1Part = new Part(eyeList, false);
-const eye2Part = new Part(eyeList, false);
-const nosePart = new Part(noseList, false);
-const mouthPart = new Part(mouthList, true);
 
 export function randomiseFace() {
     eye1Part.clear();
@@ -169,8 +164,6 @@ export function randomiseFace() {
 
     updatePartButtonStates();
     updateFlipButtonStates();
-
-    document.dispatchEvent(renderedEvent);
 }
 
 export function setFaceForeground(color) {
@@ -194,50 +187,6 @@ export function getFaceSVG(radius) {
 
     hoveredParts.forEach((part) => part.classList.add("hover"));
     return newSVG.svg();
-}
-
-export function setFromHistory(id) {
-    let historyFace = SVG(`#${id}`).clone();
-    addToHistory();
-    draw.clear();
-    background = historyFace.findOne("rect").addTo(draw).id("background");
-    faceBackgroundColor = background.fill().toUpperCase();
-
-    face = historyFace.findOne("svg").addTo(draw).id("foreground");
-    eye1Part.face = face;
-    eye2Part.face = face;
-    nosePart.face = face;
-    mouthPart.face = face;
-
-    faceForegroundColor = face.fill().toUpperCase();
-    document.dispatchEvent(renderedEvent);
-}
-
-export function addToHistory() {
-    const state = Flip.getState("#face-history");
-
-    const oldFace = draw
-        .clone()
-        .addTo("#face-history")
-        .back()
-        .id("history-" + history.length);
-    const oldEye1Part = {...eye1Part};
-    const oldEye2Part = {...eye2Part};
-    const oldNosePart = {...nosePart};
-    const oldMouthPart = {...mouthPart};
-
-    $("#history-" + history.length).wrap("<div class='face-history__item' tabindex='0'></div>");
-    history.unshift({
-        oldFace,
-        oldEye1Part,
-        oldEye2Part,
-        oldNosePart,
-        oldMouthPart,
-    });
-    if (history.length > 5) {
-        history[5].oldFace.parent().remove();
-    }
-    Flip.from(state);
 }
 
 export function showGrid() {

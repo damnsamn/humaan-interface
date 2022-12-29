@@ -1,21 +1,31 @@
+import $ from "jquery";
 import ColorContrastChecker from "color-contrast-checker";
-import {colors} from "./face/config";
+import {colors, gridDivisions, gridSize} from "./face/config";
 import {
-    addToHistory,
+    draw,
+    eye1Part,
+    eye2Part,
     face,
     faceBackgroundColor,
     faceForegroundColor,
     getFaceSVG,
+    mouthPart,
+    nosePart,
     randomiseFace,
     setFaceBackground,
     setFaceForeground,
-    setFromHistory,
+    updateFlipButtonStates,
+    updatePartButtonStates,
 } from "./face/face";
 import {eyeList, mouthList, noseList} from "./face/parts";
+import {Flip, grid} from "./utilities";
 import flipIcon from "/assets/images/flip.svg";
 import "/scss/style.scss";
+import {Part} from "./Part";
 
 let contrastChecker = new ColorContrastChecker();
+
+const history = [];
 
 updateCSSColors();
 updateFavicon();
@@ -30,23 +40,86 @@ colors.forEach((color) => {
 
 const eye1Buttons = document.querySelector("#parts-eye-1");
 const eye2Buttons = document.querySelector("#parts-eye-2");
-eye1Buttons.appendChild(createPartButton({name: "Eye00"}));
-eye2Buttons.appendChild(createPartButton({name: "Eye00"}));
-eyeList.forEach((eye) => {
-    eye1Buttons.appendChild(createPartButton(eye));
-    eye2Buttons.appendChild(createPartButton(eye));
+const eye1ClearButton = createPartButton({name: "Eye00"});
+const eye2ClearButton = createPartButton({name: "Eye00"});
+eye1Buttons.appendChild(eye1ClearButton);
+eye2Buttons.appendChild(eye2ClearButton);
+eye1ClearButton.addEventListener("click", () => {
+    face.findOne("#" + eye1Part.name)?.remove();
+    eye1Part.clear();
+    updatePartButtonStates();
+});
+eye2ClearButton.addEventListener("click", () => {
+    face.findOne("#" + eye2Part.name)?.remove();
+    eye2Part.clear();
+    updatePartButtonStates();
+});
+eyeList.forEach((eye, i) => {
+    const eye1Button = createPartButton(eye);
+    const eye2Button = createPartButton(eye);
+
+    eye1Buttons.appendChild(eye1Button);
+    eye2Buttons.appendChild(eye2Button);
+
+    eye1Button.addEventListener("click", () => {
+        face.findOne("#" + eye1Part.name)?.remove();
+        eye1Part.set(i, eye1Part.flipX, eye1Part.flipY, {
+            x: eye1Part.SVG?.x() / gridSize ?? 0,
+            y: eye1Part.SVG?.y() / gridSize ?? 0,
+            width: eye1Part.SVG?.width() / gridSize ?? gridDivisions / 2,
+            height: eye1Part.SVG?.height() / gridSize ?? gridDivisions / 2,
+        });
+        updatePartButtonStates();
+    });
+    eye2Button.addEventListener("click", () => {
+        face.findOne("#" + eye2Part.name)?.remove();
+        eye2Part.set(i, eye2Part.flipX, eye2Part.flipY, {
+            x: eye2Part.SVG?.x() / gridSize ?? 0,
+            y: eye2Part.SVG?.y() / gridSize ?? 0,
+            width: eye2Part.SVG?.width() / gridSize ?? gridDivisions / 2,
+            height: eye2Part.SVG?.height() / gridSize ?? gridDivisions / 2,
+        });
+        updatePartButtonStates();
+    });
 });
 
 const noseButtons = document.querySelector("#parts-nose");
-noseButtons.appendChild(createPartButton({name: "Nose00"}));
-noseList.forEach((nose) => {
-    noseButtons.appendChild(createPartButton(nose));
+const noseClearButton = createPartButton({name: "Nose00"});
+noseButtons.appendChild(noseClearButton);
+noseClearButton.addEventListener("click", () => {
+    face.findOne("#" + nosePart.name)?.remove();
+    nosePart.clear();
+    updatePartButtonStates();
+});
+noseList.forEach((nose, i) => {
+    const noseButton = createPartButton(nose);
+
+    noseButtons.appendChild(noseButton);
+
+    noseButton.addEventListener("click", () => {
+        face.findOne("#" + nosePart.name)?.remove();
+        nosePart.set(i);
+        updatePartButtonStates();
+    });
 });
 
 const mouthButtons = document.querySelector("#parts-mouth");
-mouthButtons.appendChild(createPartButton({name: "Mouth00"}));
-mouthList.forEach((mouth) => {
-    mouthButtons.appendChild(createPartButton(mouth));
+const mouthClearButton = createPartButton({name: "Mouth00"});
+mouthButtons.appendChild(mouthClearButton);
+mouthClearButton.addEventListener("click", () => {
+    face.findOne("#" + mouthPart.name)?.remove();
+    mouthPart.clear();
+    updatePartButtonStates();
+});
+mouthList.forEach((mouth, i) => {
+    const mouthButton = createPartButton(mouth);
+
+    mouthButtons.appendChild(mouthButton);
+    mouthButton.addEventListener("click", () => {
+        face.findOne("#" + mouthPart.name)?.remove();
+        mouthPart.set(i);
+        updatePartButtonStates();
+    });
 });
 
 const flipButtons = document.querySelectorAll("[data-flip]");
@@ -56,11 +129,14 @@ flipButtons.forEach((button) => {
         const axis = button.dataset.flip;
         button.classList.toggle("active");
         const propertyGroup = button.parentElement.nextElementSibling;
-        propertyGroup.classList.toggle("flip-"+axis);
+        propertyGroup.classList.toggle("flip-" + axis);
 
-        const name = propertyGroup.querySelector(".active").dataset.part;
-        face.findOne("#"+name).children().flip(axis);
-
+        const name = propertyGroup.id.split("parts-")[1];
+        const part = Part.getByName(name);
+        part.setFlipX(!part.flipX);
+        face.findOne("#" + name)
+            .children()
+            .flip(axis);
     });
 });
 
@@ -197,7 +273,7 @@ function faceJump() {
 
 function updateFavicon() {
     const prepend = "data:image/svg+xml;utf8,";
-    const svg = getFaceSVG("15%").replace(/\"/g, "'").replace(/\#/g, "%23");
+    const svg = getFaceSVG("15%").replace(/"/g, "'").replace(/#/g, "%23");
 
     let toDelete = document.querySelector("link#favicon");
     if (toDelete) toDelete.remove();
@@ -207,6 +283,64 @@ function updateFavicon() {
     linkEl.setAttribute("href", `${prepend}${svg}`);
     linkEl.id = "favicon";
     document.head.appendChild(linkEl);
+}
+
+function setFromHistory(id) {
+    addToHistory();
+
+    const historyItem = history.find((item) => item.oldFace.node.id === id);
+
+    eye1Part.setProperties(historyItem.oldEye1Part);
+    eye2Part.setProperties(historyItem.oldEye2Part);
+    nosePart.setProperties(historyItem.oldNosePart);
+    mouthPart.setProperties(historyItem.oldMouthPart);
+
+    face.clear();
+    eye1Part.SVG?.addTo(face);
+    eye2Part.SVG?.addTo(face);
+    nosePart.SVG?.addTo(face);
+    mouthPart.SVG?.addTo(face);
+
+    updatePartButtonStates();
+    updateFlipButtonStates();
+
+    const fg = historyItem.oldFace.findOne("svg").fill().toUpperCase();
+    const bg = historyItem.oldFace.findOne("rect").fill().toUpperCase();
+
+    setFaceBackground(bg);
+    setFaceForeground(fg);
+    updateForegroundButtons(fg);
+    updateBackgroundButtons(bg);
+
+    updateCSSColors();
+    updateFavicon();
+}
+
+function addToHistory() {
+    const state = Flip.getState("#face-history");
+
+    const oldFace = draw
+        .clone()
+        .addTo("#face-history")
+        .back()
+        .id("history-" + history.length);
+    const oldEye1Part = {...eye1Part};
+    const oldEye2Part = {...eye2Part};
+    const oldNosePart = {...nosePart};
+    const oldMouthPart = {...mouthPart};
+
+    $("#history-" + history.length).wrap("<div class='face-history__item' tabindex='0'></div>");
+    history.unshift({
+        oldFace,
+        oldEye1Part,
+        oldEye2Part,
+        oldNosePart,
+        oldMouthPart,
+    });
+    if (history.length > 5) {
+        history[5].oldFace.parent().remove();
+    }
+    Flip.from(state);
 }
 
 function exportSVG(svg) {

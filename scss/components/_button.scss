@@ -18,6 +18,7 @@
   box-shadow: none;
   @include pseudo-border(3px solid $color__foreground, inherit);
   transition: $transition--short;
+  user-select: none;
 
   &::before {
     transition: inherit;
